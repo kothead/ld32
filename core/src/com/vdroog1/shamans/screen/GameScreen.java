@@ -131,7 +131,6 @@ public class GameScreen extends BaseScreen {
     }
 
     public void gameOver(boolean victory) {
-        Gdx.app.log("Test", "gameOver");
         Label label = new Label(null, SkinCache.getDefaultSkin(), "message");
         String message = "";
         if (victory)
@@ -140,7 +139,6 @@ public class GameScreen extends BaseScreen {
             message = "GAME OVER, LOSER!!!";
         label.setText(message);
 
-        Gdx.app.log("Camera position", getCamera().position.x + " " + getCamera().position.y);
         label.setPosition(getCamera().position.x - label.getTextBounds().x, getCamera().position.y);
         stage().addActor(label);
         gameOver = true;

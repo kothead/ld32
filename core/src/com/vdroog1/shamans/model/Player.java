@@ -110,6 +110,7 @@ public class Player extends Sprite implements MovementListener {
 
         stateTime += delta;
         if (state.animated && state.animation.isAnimationFinished(stateTime)) {
+            Gdx.app.log("isAnimationFinished ", "current state " + state);
             if (state == State.STRIKE) {
                 setState(State.FALL);
                 fallingTime = 0;
@@ -169,7 +170,6 @@ public class Player extends Sprite implements MovementListener {
 
         if (state == State.FALL) {
             fallingTime += delta;
-            Gdx.app.log("Test", "falling for " + fallingTime);
             if (getY() + getHeight() < 0) {
                 gameScreen.gameOver(false);
                 return;
@@ -188,6 +188,7 @@ public class Player extends Sprite implements MovementListener {
             gameScreen.gameOver(isPlayer);
         }
 
+        Gdx.app.log("Velocity y ", String.valueOf(velocity.y));
         if (velocity.y < 0) {
             canJump = collisionY = collidesBottom();
             if (oldCellY <= getCellY(getY())) collisionY = false;
