@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="80" height="800" tilewidth="8" tileheight="8" nextobjectid="1">
+ <tileset firstgid="1" name="tiles" tilewidth="8" tileheight="8">
+  <image source="tiles.png" width="24" height="32"/>
+  <tile id="0">
+   <properties>
+    <property name="blocked-top" value=""/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="blocked-top" value=""/>
+   </properties>
+  </tile>
+  <tile id="2">
+   <properties>
+    <property name="blocked-top" value=""/>
+   </properties>
+  </tile>
+  <tile id="3"/>
+  <tile id="4"/>
+  <tile id="5"/>
+  <tile id="6">
+   <properties>
+    <property name="blocked-top" value=""/>
+   </properties>
+  </tile>
+  <tile id="7">
+   <properties>
+    <property name="blocked-top" value=""/>
+   </properties>
+  </tile>
+  <tile id="8"/>
+  <tile id="9"/>
+  <tile id="10"/>
+  <tile id="11"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="80" height="800">
+  <data encoding="base64" compression="zlib">
+   eJzt1o2KwjAMAODezzhx9/7PexMclJCsk0Mq+H0QOl03Y0yGrQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC8r48tPgfxNS2717fc4/seSxHk9pr1a4x3rl81n/tM9j1X1XB2/WY+Y/oZjL3WWl6rbKZn6vOIv3Gf6zPEz+rX/XxVs1jrWbLfOJuVsx7p51H9jma2r+NMWc9lxzej51VLrq+e+3Fv1u9HM/tK81vlFr9v1gOxP2NvZL21DPZW55/x/+Vni0tYz77Xr9n+/0R270dyqK4b5Z3d5+izr1usxXrtXq/JcXVNdf7MntE91xDZvmxv9X2O8hnld4tfISbGHyrgEJo=
+  </data>
+ </layer>
+</map>

@@ -3,12 +3,18 @@ package com.vdroog1.shamans;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.vdroog1.shamans.data.ImageCache;
+import com.vdroog1.shamans.data.SkinCache;
+import com.vdroog1.shamans.data.SoundCache;
 import com.vdroog1.shamans.screen.GameScreen;
 
 public class ShamanGame extends Game {
 
 	@Override
 	public void create () {
+        ImageCache.load();
+        SkinCache.load();
+        SoundCache.load();
         Gdx.input.setCatchBackKey(true);
         setGameScreen();
     }

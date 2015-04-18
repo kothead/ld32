@@ -11,10 +11,11 @@ import java.io.FileFilter;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
+        packAssets();
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.resizable = false;
-        config.width = Configuration.GAME_WIDTH;
-        config.height = Configuration.GAME_HEIGHT;
+        //config.resizable = false;
+        config.width = Configuration.GAME_HEIGHT;
+        config.height = Configuration.GAME_WIDTH;
         config.samples = 8;
 		new LwjglApplication(new ShamanGame(), config);
 	}
@@ -38,7 +39,7 @@ public class DesktopLauncher {
         settings.paddingY = 4;
 
         for (File childDir: dir.listFiles(filter)) {
-            TexturePacker.process(settings, childDir.getPath(), "data", childDir.getName());
+            TexturePacker.process(settings, childDir.getPath(), "image", childDir.getName());
         }
     }
 }
