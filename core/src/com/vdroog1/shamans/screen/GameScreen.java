@@ -6,9 +6,14 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Array;
 import com.vdroog1.shamans.ShamanGame;
+import com.vdroog1.shamans.data.SkinCache;
 import com.vdroog1.shamans.interfaces.InputController;
+import com.vdroog1.shamans.model.ArrowButton;
 import com.vdroog1.shamans.model.Player;
+import com.vdroog1.shamans.view.Message;
 
 /**
  * Created by st on 4/18/15.
@@ -21,6 +26,11 @@ public class GameScreen extends BaseScreen {
     private OrthogonalTiledMapRenderer renderer;
 
     Player player;
+
+    private Array<ArrowButton.Type> spellCasting = new Array<ArrowButton.Type>();
+    private Message message;
+
+    boolean gameOver = false;
 
     public GameScreen(ShamanGame game) {
         super(game);
@@ -44,12 +54,16 @@ public class GameScreen extends BaseScreen {
         renderer = new OrthogonalTiledMapRenderer(map, UNIT_SCALE);
 
         TiledMapTileLayer tileLayer = (TiledMapTileLayer) map.getLayers().get(0);
-        player = new Player(tileLayer);
+        player = new Player(this, tileLayer);
         player.setMovementController(new InputController());
         player.setPosition(50, 5 * tileLayer.getTileHeight() * UNIT_SCALE);
 
         mapHeight = tileLayer.getHeight() * tileLayer.getTileHeight() * UNIT_SCALE;
         mapWidth = tileLayer.getWidth() * tileLayer.getTileWidth() * UNIT_SCALE;
+
+        Label label = new Label(null, SkinCache.getDefaultSkin(), "message");
+        stage().addActor(label);
+        message = new Message(label, player, spellCasting);
 
         Gdx.input.setInputProcessor((InputController) player.getMovementController());
     }
@@ -62,6 +76,9 @@ public class GameScreen extends BaseScreen {
 
         moveCamera();
         player.update(delta);
+        if (!message.process(delta)) {
+            stopCasting();
+        }
 
         renderer.setView(getCamera());
         renderer.render();
@@ -69,6 +86,13 @@ public class GameScreen extends BaseScreen {
         renderer.getBatch().begin();
         player.draw(renderer.getBatch());
         renderer.getBatch().end();
+
+        stage().act(delta);
+        stage().draw();
+    }
+
+    private void stopCasting() {
+        spellCasting.clear();
     }
 
     private void moveCamera() {
@@ -90,5 +114,39 @@ public class GameScreen extends BaseScreen {
         getCamera().position.set(positionX, positionY, 0);
         getCamera().update();
 
+    }
+
+    public void addSpellCasting(ArrowButton.Type type) {
+        spellCasting.add(type);
+    }
+
+    public int getSpellCount() {
+        return spellCasting.size;
+    }
+
+    public void castSpell() {
+        spellCasting.clear();
+        message.reset();
+        player.strike();
+    }
+
+    public void gameOver(boolean victory) {
+        Gdx.app.log("Test", "gameOver");
+        Label label = new Label(null, SkinCache.getDefaultSkin(), "message");
+        String message = "";
+        if (victory)
+            message = "VICTORY!!! YOU ARE THE BOSS!!!";
+        else
+            message = "GAME OVER, LOSER!!!";
+        label.setText(message);
+        Gdx.app.log("Camera position", getCamera().position.x + " " + getCamera().position.y);
+        label.setPosition(getWorldWidth() / 2 - label.getWidth() / 2 + getCamera().position.x,
+                getWorldHeight() / 2);
+        stage().addActor(label);
+        gameOver = true;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
     }
 }

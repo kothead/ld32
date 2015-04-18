@@ -16,8 +16,13 @@ import com.vdroog1.shamans.screen.GameScreen;
  */
 public class Player extends Sprite implements MovementListener {
 
+    private GameScreen gameScreen;
+
     enum State {
         STAND("player", 0, 0, Animation.PlayMode.NORMAL),
+        STRIKE("player-strike", 3, 0.6f, Animation.PlayMode.NORMAL),
+        FALL("player-fall", 0, 0, Animation.PlayMode.NORMAL),
+        DEAD("player-dead", 0, 0, Animation.PlayMode.NORMAL),
         LEFT_JUMP_START("playerl", 2, 0.1f, Animation.PlayMode.NORMAL),
         LEFT_JUMP_STOP("playerl", 2, 0.1f, Animation.PlayMode.REVERSED),
         RIGHT_JUMP_START("playerr", 2, 0.1f, Animation.PlayMode.NORMAL),
@@ -52,7 +57,7 @@ public class Player extends Sprite implements MovementListener {
     private final Vector2 velocity = new Vector2();
 
     private boolean canJump;
-    private boolean isLumpingLow;
+    private boolean isJumpingLow;
     private float collisionStep;
     private TiledMapTileLayer collisionLayer;
 
@@ -62,8 +67,13 @@ public class Player extends Sprite implements MovementListener {
     private State state;
     private float stateTime;
 
-    public Player(TiledMapTileLayer collisionLayer) {
+    private float fallingTime = 0;
+    private boolean isPlayer = true;
+
+    public Player(GameScreen gameScreen, TiledMapTileLayer collisionLayer) {
         super(ImageCache.getTexture("player"));
+
+        this.gameScreen = gameScreen;
 
         setState(State.STAND);
 
@@ -86,6 +96,7 @@ public class Player extends Sprite implements MovementListener {
     }
 
     private void setState(State state) {
+        if (gameScreen.isGameOver()) return;
         if (this.state != state) {
             this.state = state;
             stateTime = 0;
@@ -93,13 +104,22 @@ public class Player extends Sprite implements MovementListener {
     }
 
     private void updateState(float delta) {
+        if (gameScreen.isGameOver()) return;
+
         stateTime += delta;
         if (state.animated && state.animation.isAnimationFinished(stateTime)) {
-            if (state == State.RIGHT_JUMP_START || state == State.LEFT_JUMP_START) {
-                isLumpingLow = true;
+            if (state == State.STRIKE) {
+                setState(State.FALL);
+            } else if (state == State.RIGHT_JUMP_START || state == State.LEFT_JUMP_START) {
+                isJumpingLow = true;
                 onJump();
-            } else if (state == State.RIGHT_JUMP_STOP || state == State.LEFT_JUMP_STOP)
+            } else if (state == State.RIGHT_JUMP_STOP || state == State.LEFT_JUMP_STOP) {
                 setState(State.STAND);
+                if (gameScreen.getSpellCount() == 3) {
+                    gameScreen.castSpell();
+                }
+            }
+
         }
     }
 
@@ -117,6 +137,9 @@ public class Player extends Sprite implements MovementListener {
     }
 
     public void update(float delta) {
+        if (state == State.DEAD || gameScreen.isGameOver())
+            return;
+
         movementController.progress(delta);
         updateState(delta);
 
@@ -141,11 +164,21 @@ public class Player extends Sprite implements MovementListener {
         setX(getX() + velocity.x * delta);
         setY(getY() + velocity.y * delta);
 
+        if (state == State.FALL) {
+            fallingTime += delta;
+            if (getY() + getHeight() < 0) {
+                gameScreen.gameOver(false);
+                return;
+            }
+            if (fallingTime < 5)
+                return;
+        }
+
         if (velocity.y < 0) {
             canJump = collisionY = collidesBottom();
             if (oldCellY <= getCellY(getY())) collisionY = false;
-            if (isLumpingLow) {
-                isLumpingLow = false;
+            if (isJumpingLow) {
+                isJumpingLow = false;
                 finishJumpAnimation();
             }
         }
@@ -157,7 +190,15 @@ public class Player extends Sprite implements MovementListener {
 
     }
 
+    public void strike() {
+        if (gameScreen.isGameOver()) return;
+
+        setState(State.STRIKE);
+    }
+
     private void finishJumpAnimation() {
+        if (gameScreen.isGameOver()) return;
+
         if (state == State.RIGHT_JUMP_START)
             setState(State.RIGHT_JUMP_STOP);
         if (state == State.LEFT_JUMP_START)
@@ -181,6 +222,8 @@ public class Player extends Sprite implements MovementListener {
 
     @Override
     public void onJump() {
+        if (state == State.STRIKE || gameScreen.isGameOver())
+            return;
         if (canJump) {
             velocity.y = speed.y;
             canJump = false;
@@ -189,14 +232,26 @@ public class Player extends Sprite implements MovementListener {
 
     @Override
     public void onLeftLegJump() {
-        if (!isCastingJumping())
+        if (state == State.STRIKE || gameScreen.isGameOver())
+            return;
+        if (!isCastingJumping()) {
+            addSpellCasting(ArrowButton.Type.LEFT);
             setState(State.LEFT_JUMP_START);
+        }
+    }
+
+    private void addSpellCasting(ArrowButton.Type type) {
+        gameScreen.addSpellCasting(type);
     }
 
     @Override
     public void onRightLegJump() {
-        if (!isCastingJumping())
+        if (state == State.STRIKE || gameScreen.isGameOver())
+            return;
+        if (!isCastingJumping()) {
+            addSpellCasting(ArrowButton.Type.RIGHT);
             setState(State.RIGHT_JUMP_START);
+        }
     }
 
     private boolean isCastingJumping() {

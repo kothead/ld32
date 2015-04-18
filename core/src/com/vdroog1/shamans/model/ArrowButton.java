@@ -10,7 +10,7 @@ import com.vdroog1.shamans.data.ImageCache;
  */
 public class ArrowButton extends Actor {
 
-    enum Type {
+    public enum Type {
         LEFT("left_arrow"),
         RIGHT("right_arrow");
 
@@ -23,17 +23,15 @@ public class ArrowButton extends Actor {
 
     Type type;
 
-    public ArrowButton () {
-    }
-
-    public void setRegion(Type type) {
+    public ArrowButton (Type type) {
+        super();
         this.type = type;
+      //  setRegion(ImageCache.getTexture(type.name()));
     }
 
     @Override
     public void draw (Batch batch, float parentAlpha) {
-        batch.draw(type.region, getX(), getY(), getOriginX(), getOriginY(),
-                getWidth(), getHeight(), getScaleX(), getScaleY(), getRotation());
+        batch.draw(type.region, getX(), getY());
     }
 
 }

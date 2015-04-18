@@ -1,55 +1,104 @@
 
 pack.png
-size: 128,256
+size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-player
+left_arrow
   rotate: false
-  xy: 2, 160
+  xy: 2, 2
   size: 58, 75
   orig: 58, 75
   offset: 0, 0
   index: -1
-playerl
+player
   rotate: false
-  xy: 2, 81
+  xy: 64, 2
+  size: 58, 75
+  orig: 58, 75
+  offset: 0, 0
+  index: -1
+player-dead
+  rotate: false
+  xy: 126, 19
+  size: 75, 58
+  orig: 75, 58
+  offset: 0, 0
+  index: -1
+player-fall
+  rotate: false
+  xy: 205, 2
+  size: 58, 75
+  orig: 58, 75
+  offset: 0, 0
+  index: -1
+player-strike
+  rotate: false
+  xy: 267, 2
   size: 58, 75
   orig: 58, 75
   offset: 0, 0
   index: 1
-playerl
+player-strike
   rotate: false
-  xy: 2, 81
+  xy: 329, 2
+  size: 58, 75
+  orig: 58, 75
+  offset: 0, 0
+  index: 2
+player-strike
+  rotate: false
+  xy: 391, 2
   size: 58, 75
   orig: 58, 75
   offset: 0, 0
   index: 3
 playerl
   rotate: false
-  xy: 64, 160
+  xy: 453, 2
+  size: 58, 75
+  orig: 58, 75
+  offset: 0, 0
+  index: 1
+playerl
+  rotate: false
+  xy: 453, 2
+  size: 58, 75
+  orig: 58, 75
+  offset: 0, 0
+  index: 3
+playerl
+  rotate: false
+  xy: 515, 2
   size: 58, 75
   orig: 58, 75
   offset: 0, 0
   index: 2
 playerr
   rotate: false
-  xy: 2, 2
+  xy: 577, 2
   size: 58, 75
   orig: 58, 75
   offset: 0, 0
   index: 1
 playerr
   rotate: false
-  xy: 2, 2
+  xy: 577, 2
   size: 58, 75
   orig: 58, 75
   offset: 0, 0
   index: 4
 playerr
   rotate: false
-  xy: 64, 81
+  xy: 639, 2
   size: 58, 75
   orig: 58, 75
   offset: 0, 0
   index: 2
+right_arrow
+  rotate: false
+  xy: 701, 2
+  size: 58, 75
+  orig: 58, 75
+  offset: 0, 0
+  index: -1
