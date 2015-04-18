@@ -17,6 +17,7 @@ public class GameScreen extends BaseScreen {
 
     public static final int UNIT_SCALE = 4;
     private TiledMap map;
+    private float mapWidth, mapHeight;
     private OrthogonalTiledMapRenderer renderer;
 
     Player player;
@@ -47,18 +48,19 @@ public class GameScreen extends BaseScreen {
         player.setMovementController(new InputController());
         player.setPosition(50, 5 * tileLayer.getTileHeight() * UNIT_SCALE);
 
+        mapHeight = tileLayer.getHeight() * tileLayer.getTileHeight() * UNIT_SCALE;
+        mapWidth = tileLayer.getWidth() * tileLayer.getTileWidth() * UNIT_SCALE;
+
         Gdx.input.setInputProcessor((InputController) player.getMovementController());
     }
 
     @Override
     public void render(float delta) {
         super.render(delta);
-        Gdx.gl20.glClearColor(0.8f,0.8f,1,1);
+        Gdx.gl20.glClearColor(0.8f, 0.8f, 1, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        getCamera().position.set(player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() / 2, 0);
-        getCamera().update();
-
+        moveCamera();
         player.update(delta);
 
         renderer.setView(getCamera());
@@ -67,5 +69,26 @@ public class GameScreen extends BaseScreen {
         renderer.getBatch().begin();
         player.draw(renderer.getBatch());
         renderer.getBatch().end();
+    }
+
+    private void moveCamera() {
+        float positionX = player.getX() + player.getWidth() / 2;
+        float positionY = player.getY() + player.getHeight() / 2;
+
+        if (positionX < getWorldWidth() / 2f) {
+            positionX = getWorldWidth() / 2f;
+        } else if (positionX > mapWidth - getWorldWidth() / 2f ) {
+            positionX = mapWidth - getWorldWidth() / 2f;
+        }
+
+        if (positionY < getWorldHeight() / 2f) {
+            positionY = getWorldHeight() / 2f;
+        } else if (positionY > mapHeight - getWorldHeight() / 2f) {
+            positionY = mapHeight - getWorldHeight() / 2f;
+        }
+
+        getCamera().position.set(positionX, positionY, 0);
+        getCamera().update();
+
     }
 }

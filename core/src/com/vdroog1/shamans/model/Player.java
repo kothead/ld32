@@ -72,7 +72,7 @@ public class Player extends Sprite implements MovementListener {
             canJump = collisionY = collidesBottom();
             if (oldCellY <= getCellY(getY())) collisionY = false;
         }
-        
+
         if (collisionY) {
             setY(getY() - velocity.y * delta);
             velocity.y = 0;
