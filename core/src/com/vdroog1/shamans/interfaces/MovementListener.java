@@ -6,4 +6,6 @@ package com.vdroog1.shamans.interfaces;
 public interface MovementListener {
 
     public void onJump();
+    public void onLeftLegJump();
+    public void onRightLegJump();
 }

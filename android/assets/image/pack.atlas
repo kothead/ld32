@@ -1,6 +1,6 @@
 
 pack.png
-size: 64,256
+size: 128,256
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
@@ -17,11 +17,39 @@ playerl
   size: 58, 75
   orig: 58, 75
   offset: 0, 0
-  index: -1
+  index: 1
+playerl
+  rotate: false
+  xy: 2, 81
+  size: 58, 75
+  orig: 58, 75
+  offset: 0, 0
+  index: 3
+playerl
+  rotate: false
+  xy: 64, 160
+  size: 58, 75
+  orig: 58, 75
+  offset: 0, 0
+  index: 2
 playerr
   rotate: false
   xy: 2, 2
   size: 58, 75
   orig: 58, 75
   offset: 0, 0
-  index: -1
+  index: 1
+playerr
+  rotate: false
+  xy: 2, 2
+  size: 58, 75
+  orig: 58, 75
+  offset: 0, 0
+  index: 4
+playerr
+  rotate: false
+  xy: 64, 81
+  size: 58, 75
+  orig: 58, 75
+  offset: 0, 0
+  index: 2

@@ -25,4 +25,12 @@ public class ImageCache {
         return atlas.findRegion(name, index);
     }
 
+    public static TextureRegion[] getFrames(String name, int offset, int count) {
+        TextureRegion[] regions = new TextureRegion[count];
+        for (int i = offset, j = 0; i < count + offset; i++, j++) {
+            regions[j] = getFrame(name, i);
+        }
+        return regions;
+    }
+
 }

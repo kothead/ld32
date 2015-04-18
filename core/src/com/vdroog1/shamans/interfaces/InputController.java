@@ -44,6 +44,14 @@ public class InputController extends InputAdapter implements MovementController 
                 if (movementListener != null)
                     movementListener.onJump();
                 break;
+            case Input.Keys.LEFT:
+                if (movementListener != null)
+                    movementListener.onLeftLegJump();
+                break;
+            case Input.Keys.RIGHT:
+                if (movementListener != null)
+                    movementListener.onRightLegJump();
+                break;
             default:
                 break;
         }
