@@ -1,5 +1,6 @@
 package com.vdroog1.shamans.model;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -16,6 +17,7 @@ import com.vdroog1.shamans.screen.GameScreen;
  */
 public class Player extends Sprite implements MovementListener {
 
+    public static final float FALL_TIME = 0.8f;
     private GameScreen gameScreen;
 
     enum State {
@@ -68,7 +70,7 @@ public class Player extends Sprite implements MovementListener {
     private float stateTime;
 
     private float fallingTime = 0;
-    private boolean isPlayer = true;
+    private boolean isPlayer = false;
 
     public Player(GameScreen gameScreen, TiledMapTileLayer collisionLayer) {
         super(ImageCache.getTexture("player"));
@@ -110,6 +112,7 @@ public class Player extends Sprite implements MovementListener {
         if (state.animated && state.animation.isAnimationFinished(stateTime)) {
             if (state == State.STRIKE) {
                 setState(State.FALL);
+                fallingTime = 0;
             } else if (state == State.RIGHT_JUMP_START || state == State.LEFT_JUMP_START) {
                 isJumpingLow = true;
                 onJump();
@@ -166,12 +169,23 @@ public class Player extends Sprite implements MovementListener {
 
         if (state == State.FALL) {
             fallingTime += delta;
+            Gdx.app.log("Test", "falling for " + fallingTime);
             if (getY() + getHeight() < 0) {
                 gameScreen.gameOver(false);
                 return;
             }
-            if (fallingTime < 5)
+            if (fallingTime < FALL_TIME)
                 return;
+        }
+
+        boolean collisionX = false;
+        if (velocity.x < 0)
+            collisionX = collidesLeft();
+        else if (velocity.x > 0)
+            collisionX = collidesRight();
+
+        if(collisionX) {
+            gameScreen.gameOver(isPlayer);
         }
 
         if (velocity.y < 0) {
@@ -184,6 +198,7 @@ public class Player extends Sprite implements MovementListener {
         }
 
         if (collisionY) {
+            if (state == State.FALL) setState(State.STAND);
             setY(getY() - velocity.y * delta);
             velocity.y = 0;
         }
@@ -211,6 +226,27 @@ public class Player extends Sprite implements MovementListener {
                 return true;
             }
         }
+        return false;
+    }
+
+    public boolean collidesRight() {
+        for(float step = 0; step <= getHeight(); step += collisionStep)
+            if(hasTotem(getX() + getWidth(), getY() + step))
+                return true;
+        return false;
+    }
+
+    private boolean hasTotem(float x, float y) {
+        TiledMapTileLayer.Cell cell = collisionLayer.getCell(getCellX(x), getCellY(y));
+        return cell != null && cell.getTile() != null
+                && cell.getTile().getProperties().containsKey("object")
+                && cell.getTile().getProperties().get("object", String.class).equals("totem");
+    }
+
+    public boolean collidesLeft() {
+        for(float step = 0; step <= getHeight(); step += collisionStep)
+            if(hasTotem(getX(), getY() + step))
+                return true;
         return false;
     }
 

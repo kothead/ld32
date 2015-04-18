@@ -139,9 +139,9 @@ public class GameScreen extends BaseScreen {
         else
             message = "GAME OVER, LOSER!!!";
         label.setText(message);
+
         Gdx.app.log("Camera position", getCamera().position.x + " " + getCamera().position.y);
-        label.setPosition(getWorldWidth() / 2 - label.getWidth() / 2 + getCamera().position.x,
-                getWorldHeight() / 2);
+        label.setPosition(getCamera().position.x - label.getTextBounds().x, getCamera().position.y);
         stage().addActor(label);
         gameOver = true;
     }
