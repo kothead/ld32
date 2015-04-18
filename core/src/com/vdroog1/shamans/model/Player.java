@@ -64,17 +64,15 @@ public class Player extends Sprite implements MovementListener {
             velocity.x = 0;
         }
 
-        TiledMapTileLayer.Cell oldCell = collisionLayer.getCell((int) (getX() / (collisionLayer.getTileWidth() * GameScreen.UNIT_SCALE)),
-                (int) (getY() / (collisionLayer.getTileHeight() * GameScreen.UNIT_SCALE)));
-
+        int oldCellY = getCellY(getY());
         setX(getX() + velocity.x * delta);
-
         setY(getY() + velocity.y * delta);
 
         if (velocity.y < 0) {
-
-            canJump = collisionY = collidesBottom(oldCell);
+            canJump = collisionY = collidesBottom();
+            if (oldCellY <= getCellY(getY())) collisionY = false;
         }
+        
         if (collisionY) {
             setY(getY() - velocity.y * delta);
             velocity.y = 0;
@@ -82,20 +80,19 @@ public class Player extends Sprite implements MovementListener {
 
     }
 
-    private boolean collidesBottom(TiledMapTileLayer.Cell oldCell) {
+    private boolean collidesBottom() {
         for (int step = 0; step < getWidth(); step += collisionStep) {
-            if (isCellBlocked(getX() + step, getY(), oldCell)) {
+            if (isCellBlocked(getX() + step, getY())) {
                 return true;
             }
         }
         return false;
     }
 
-    private boolean isCellBlocked(float x, float y, TiledMapTileLayer.Cell oldCell) {
-        TiledMapTileLayer.Cell cell = collisionLayer.getCell((int) (x / (collisionLayer.getTileWidth() * GameScreen.UNIT_SCALE)),
-                (int) (y / (collisionLayer.getTileHeight() * GameScreen.UNIT_SCALE)));
-        return cell != null && cell.getTile() != null &&
-                cell.getTile().getProperties().containsKey(blockedKey);
+    private boolean isCellBlocked(float x, float y) {
+        TiledMapTileLayer.Cell cell = collisionLayer.getCell(getCellX(x), getCellY(y));
+        return cell != null && cell.getTile() != null
+                && cell.getTile().getProperties().containsKey(blockedKey);
     }
 
     @Override
@@ -104,5 +101,13 @@ public class Player extends Sprite implements MovementListener {
             velocity.y = speed.y;
             canJump = false;
         }
+    }
+
+    private int getCellX(float x) {
+        return (int) (x / collisionLayer.getTileWidth() / GameScreen.UNIT_SCALE);
+    }
+
+    private int getCellY(float y) {
+        return (int) (y / collisionLayer.getTileHeight() / GameScreen.UNIT_SCALE);
     }
 }

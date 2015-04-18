@@ -5,7 +5,7 @@ package com.vdroog1.shamans.data;
  */
 public class Configuration {
 
-    public static final int GAME_WIDTH = 360;
-    public static final int GAME_HEIGHT = 640;
-    public static final float SCALE_FACTOR = 2;
+    public static final int GAME_WIDTH = 720;
+    public static final int GAME_HEIGHT = 1280;
+    public static final float SCALE_FACTOR = 1;
 }
