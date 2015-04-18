@@ -56,6 +56,9 @@ public class GameScreen extends BaseScreen {
         Gdx.gl20.glClearColor(0.8f,0.8f,1,1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        getCamera().position.set(player.getX() + player.getWidth() / 2, player.getY() + player.getHeight() / 2, 0);
+        getCamera().update();
+
         player.update(delta);
 
         renderer.setView(getCamera());
