@@ -30,6 +30,8 @@ public class GameScreen extends BaseScreen {
     Player player;
     Player bot;
 
+    //Array<Player> players = new Array<Player>();
+
     boolean gameOver = false;
 
     public GameScreen(ShamanGame game) {
@@ -126,16 +128,16 @@ public class GameScreen extends BaseScreen {
 
     public void castSpell(Player fromPlayer) {
         if (fromPlayer == player) {
-            strike(bot);
+            strike(fromPlayer, bot);
         } else {
-            strike(player);
+            strike(fromPlayer, player);
         }
 
     }
 
-    private void strike(Player player) {
-        player.strike();
-        lightnings.strike(player);
+    private void strike(Player from, Player to) {
+        if (to.strike(from))
+            lightnings.strike(to);
     }
 
     public void gameOver(boolean victory) {

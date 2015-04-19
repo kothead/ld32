@@ -1,5 +1,6 @@
 package com.vdroog1.shamans.model;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -19,6 +20,7 @@ import com.vdroog1.shamans.view.Message;
 public class Player extends Sprite implements MovementListener {
 
     public static final float FALL_TIME = 0.8f;
+    public static final int STRIKE_DELAY = 2;
     private GameScreen gameScreen;
 
     private Message message;
@@ -89,6 +91,9 @@ public class Player extends Sprite implements MovementListener {
     private State state;
     private float stateTime;
 
+    private float strikeDelay = 0;
+    private boolean waitingForStrike = false;
+
     private float fallingTime = 0;
     private boolean isPlayer = true;
 
@@ -141,8 +146,8 @@ public class Player extends Sprite implements MovementListener {
                 setState(State.STAND);
                 movementController.stopLegJumping();
                 if (spellCasing.size == 3) {
-                    spellCasing.clear();
-                    gameScreen.castSpell(this);
+                    strikeDelay = 0;
+                    waitingForStrike = true;
                 }
             }
 
@@ -165,6 +170,14 @@ public class Player extends Sprite implements MovementListener {
     public void update(float delta, Player closestPlayer) {
         if (!message.process(delta)) {
             stopCasting();
+        }
+
+        if (waitingForStrike && strikeDelay > STRIKE_DELAY) {
+            gameScreen.castSpell(this);
+            waitingForStrike = false;
+            spellCasing.clear();
+        } else if (waitingForStrike) {
+            strikeDelay += delta;
         }
 
         updateState(delta);
@@ -198,7 +211,7 @@ public class Player extends Sprite implements MovementListener {
 
         if (state == State.FALL) {
             fallingTime += delta;
-            if (getY() + getHeight() < 0) {
+            if (getY() + getHeight() < 0 && isPlayer) {
                 gameScreen.gameOver(false);
                 return;
             }
@@ -241,11 +254,37 @@ public class Player extends Sprite implements MovementListener {
         spellCasing.clear();
     }
 
-    public void strike() {
+    public boolean strike(Player fromPlayer) {
+        Gdx.app.log("Test", "Strike");
+        strikeDelay = 0;
+        waitingForStrike = false;
         message.reset();
-        if (gameScreen.isGameOver()) return;
 
-        setState(State.STRIKE);
+        if (isSpellCanceled(fromPlayer)) {
+            Gdx.app.log("Test", "Spell Canceled");
+            spellCasing.clear();
+            setState(State.STAND);
+            return false;
+        } else {
+            Gdx.app.log("Test", "Spell Works");
+            if (gameScreen.isGameOver()) return true;
+
+            setState(State.STRIKE);
+            return true;
+        }
+    }
+
+    private boolean isSpellCanceled(Player fromPlayer) {
+        for (int i = 0; i < 3; i++) {
+            Gdx.app.log("Test", "from " + fromPlayer.getSpellCasing().size + ", to " + spellCasing.size);
+            if (i >= fromPlayer.getSpellCasing().size) return false;
+            ArrowButton.Type from = fromPlayer.getSpellCasing().get(i);
+            if (i >= spellCasing.size) return false;
+            ArrowButton.Type to = spellCasing.get(i);
+            Gdx.app.log("Test", "from " + from + ", to " + to);
+            if (from != to.getOpposite()) return false;
+        }
+        return true;
     }
 
     private void finishJumpAnimation() {

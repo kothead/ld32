@@ -11,13 +11,24 @@ import com.vdroog1.shamans.data.ImageCache;
 public class ArrowButton extends Actor {
 
     public enum Type {
-        LEFT("left_arrow"),
-        RIGHT("right_arrow");
+        LEFT("left_arrow", "<"),
+        RIGHT("right_arrow", ">");
 
         private TextureRegion region;
+        private String symbol;
 
-        Type(String texture) {
+        Type(String texture, String symbol) {
             region = ImageCache.getTexture(texture);
+            this.symbol = symbol;
+        }
+
+        public Type getOpposite(){
+            if (this == LEFT) return RIGHT;
+            else return LEFT;
+        }
+
+        public String getString() {
+            return symbol;
         }
     }
 

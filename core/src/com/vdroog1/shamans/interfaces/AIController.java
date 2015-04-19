@@ -1,10 +1,12 @@
 package com.vdroog1.shamans.interfaces;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.vdroog1.shamans.ai.AStarPathFinder;
 import com.vdroog1.shamans.ai.Path;
+import com.vdroog1.shamans.model.ArrowButton;
 import com.vdroog1.shamans.model.Player;
 import com.vdroog1.shamans.screen.GameScreen;
 
@@ -54,11 +56,27 @@ public class AIController implements MovementController {
     public void progress(float delta, Player closestPlayer) {
         timeBetweenSpells += delta;
         float distance = closestPlayer.getY() - player.getY();
-        if (distance > 200 && distance < 400 && !isCasting && timeBetweenSpells > 5) {
-            listener.onLeftLegJump();
+        if (closestPlayer.getSpellCasing().size >= 2 && !isCasting
+                && closestPlayer.getSpellCasing().size > player.getSpellCasing().size) {
+            int spellSize = player.getSpellCasing().size;
+            ArrowButton.Type jump = closestPlayer.getSpellCasing().get(spellSize);
+            //random error
+            int randomNum = MathUtils.random(0, 7);
+            if (randomNum != 0) {
+                if (jump == ArrowButton.Type.RIGHT) listener.onLeftLegJump();
+                else listener.onRightLegJump();
+            } else {
+                if (jump == ArrowButton.Type.RIGHT) listener.onRightLegJump();
+                else listener.onLeftLegJump();
+            }
+            isCasting = true;
+        } /*else if (distance > 200 && distance < 400 && !isCasting && timeBetweenSpells > 3) {
+            int randomNum = MathUtils.random(0, 1);
+            if (randomNum == 0) listener.onLeftLegJump();
+            else listener.onRightLegJump();
             isCasting = true;
             timeBetweenSpells = 0;
-        }
+        }*/
 
         if (isCasting) return;
 
@@ -100,6 +118,9 @@ public class AIController implements MovementController {
             isMovingRight = false;
             isMovingLeft = false;
         }
+
+        isMovingRight = false;
+        isMovingLeft = false;
     }
 
     private void findPath() {
@@ -159,6 +180,7 @@ public class AIController implements MovementController {
     @Override
     public void stopLegJumping() {
         isCasting = false;
+        findPath();
     }
 
     @Override

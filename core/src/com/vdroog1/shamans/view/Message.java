@@ -33,7 +33,7 @@ public class Message {
     public boolean process(float delta) {
         String spellString = "";
         for (int i = 0; i < Math.min(3, spellCasting.size); i++) {
-            spellString += spell[i];
+            spellString += spellCasting.get(i).getString();
         }
 
         label.setText(spellString);
