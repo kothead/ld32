@@ -328,11 +328,19 @@ public class Player extends Sprite implements MovementListener {
                 || state == State.RIGHT_JUMP_START || state == State.RIGHT_JUMP_STOP;
     }
 
+    public int getCellX() {
+        return getCellX(getX());
+    }
+
+    public int getCellY() {
+        return getCellY(getY());
+    }
+
     private int getCellX(float x) {
-        return (int) (x / collisionLayer.getTileWidth() / GameScreen.UNIT_SCALE);
+        return (int) (x / gameScreen.getTileWidth());
     }
 
     private int getCellY(float y) {
-        return (int) (y / collisionLayer.getTileHeight() / GameScreen.UNIT_SCALE);
+        return (int) (y / gameScreen.getTileHeight());
     }
 }

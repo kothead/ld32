@@ -2,6 +2,7 @@ package com.vdroog1.shamans.util;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.vdroog1.shamans.screen.GameScreen;
 
 /**
  * Created by st on 4/18/15.
