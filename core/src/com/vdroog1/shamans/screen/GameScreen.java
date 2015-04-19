@@ -11,6 +11,7 @@ import com.vdroog1.shamans.ShamanGame;
 import com.vdroog1.shamans.data.SkinCache;
 import com.vdroog1.shamans.interfaces.AIController;
 import com.vdroog1.shamans.interfaces.InputController;
+import com.vdroog1.shamans.model.LightningController;
 import com.vdroog1.shamans.model.Player;
 import com.vdroog1.shamans.view.Message;
 
@@ -22,18 +23,18 @@ public class GameScreen extends BaseScreen {
     public static final int UNIT_SCALE = 4;
     private TiledMap map;
     private float mapWidth, mapHeight;
+    private float tileWidth, tileHeight;
     private OrthogonalTiledMapRenderer renderer;
+    private LightningController lightnings;
 
     Player player;
     Player bot;
-
-
-
 
     boolean gameOver = false;
 
     public GameScreen(ShamanGame game) {
         super(game);
+        lightnings = new LightningController(this);
     }
 
     @Override
@@ -70,8 +71,10 @@ public class GameScreen extends BaseScreen {
         bot.setPosition(150, 5 * tileLayer.getTileHeight() * UNIT_SCALE);
         bot.setMessgae(new Message(label, bot, bot.getSpellCasing()));
 
-        mapHeight = tileLayer.getHeight() * tileLayer.getTileHeight() * UNIT_SCALE;
-        mapWidth = tileLayer.getWidth() * tileLayer.getTileWidth() * UNIT_SCALE;
+        tileWidth = tileLayer.getTileWidth() * UNIT_SCALE;
+        tileHeight = tileLayer.getTileHeight() * UNIT_SCALE;
+        mapWidth = tileLayer.getWidth() * tileWidth;
+        mapHeight = tileLayer.getHeight() * tileHeight;
 
         Gdx.input.setInputProcessor((InputController) player.getMovementController());
     }
@@ -91,6 +94,8 @@ public class GameScreen extends BaseScreen {
         renderer.render();
 
         renderer.getBatch().begin();
+        lightnings.process(renderer.getBatch());
+        
     //    player.draw(renderer.getBatch());
         bot.draw(renderer.getBatch());
         renderer.getBatch().end();
@@ -98,8 +103,6 @@ public class GameScreen extends BaseScreen {
         stage().act(delta);
         stage().draw();
     }
-
-
 
     private void moveCamera(Player player) {
         float positionX = player.getX() + player.getWidth() / 2;
@@ -124,6 +127,7 @@ public class GameScreen extends BaseScreen {
 
     public void castSpell(Player fromPlayer) {
         fromPlayer.strike();
+        lightnings.strike(fromPlayer);
     }
 
     public void gameOver(boolean victory) {
@@ -142,5 +146,13 @@ public class GameScreen extends BaseScreen {
 
     public boolean isGameOver() {
         return gameOver;
+    }
+
+    public float getTileWidth() {
+        return tileWidth;
+    }
+
+    public float getTileHeight() {
+        return tileHeight;
     }
 }
