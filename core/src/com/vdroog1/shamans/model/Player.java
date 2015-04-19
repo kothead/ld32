@@ -162,7 +162,7 @@ public class Player extends Sprite implements MovementListener {
         return movementController;
     }
 
-    public void update(float delta) {
+    public void update(float delta, Player closestPlayer) {
         if (!message.process(delta)) {
             stopCasting();
         }
@@ -172,7 +172,7 @@ public class Player extends Sprite implements MovementListener {
                 state == State.STRIKE)
             return;
 
-        movementController.progress(delta);
+        movementController.progress(delta, closestPlayer);
 
 
         velocity.y -= gravity;

@@ -18,6 +18,7 @@ public class AIController implements MovementController {
         add(new Vector2(34, 799 - 756));
         add(new Vector2(35, 799 - 744));
         add(new Vector2(31, 799 - 736));
+        add(new Vector2(48, 799 - 759));
     }};
 
 
@@ -28,7 +29,7 @@ public class AIController implements MovementController {
     boolean isMovingLeft = false;
     boolean isCasting = false;
 
-    float timeToSpell = 0;
+    float timeBetweenSpells = 0;
 
     int lastControlPoint = 0;
     boolean isPathSearchRunning = false;
@@ -50,17 +51,16 @@ public class AIController implements MovementController {
     }
 
     @Override
-    public void progress(float delta) {
-/*        if (!isCasting)
-            timeToSpell += delta;
-
-        if (timeToSpell > 2 && !isCasting) {
+    public void progress(float delta, Player closestPlayer) {
+        timeBetweenSpells += delta;
+        float distance = closestPlayer.getY() - player.getY();
+        if (distance > 200 && distance < 400 && !isCasting && timeBetweenSpells > 5) {
             listener.onLeftLegJump();
             isCasting = true;
-            timeToSpell = 0;
+            timeBetweenSpells = 0;
         }
 
-        if (isCasting) return;*/
+        if (isCasting) return;
 
         if (path == null || path.getLength() == 0) {
             if (!isPathSearchRunning && lastControlPoint < positions.size) {

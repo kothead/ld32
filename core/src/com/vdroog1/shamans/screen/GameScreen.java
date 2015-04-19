@@ -85,9 +85,9 @@ public class GameScreen extends BaseScreen {
         Gdx.gl20.glClearColor(0.8f, 0.8f, 1, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        moveCamera(bot);
-        player.update(delta);
-        bot.update(delta);
+        moveCamera(player);
+        player.update(delta, bot);
+        bot.update(delta, player);
 
         renderer.setView(getCamera());
         renderer.render();
@@ -127,8 +127,9 @@ public class GameScreen extends BaseScreen {
     public void castSpell(Player fromPlayer) {
         if (fromPlayer == player) {
             strike(bot);
-        } else
+        } else {
             strike(player);
+        }
 
     }
 
