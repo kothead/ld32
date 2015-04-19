@@ -1,16 +1,17 @@
 package com.vdroog1.shamans.model;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.vdroog1.shamans.data.ImageCache;
 import com.vdroog1.shamans.interfaces.MovementController;
 import com.vdroog1.shamans.interfaces.MovementListener;
 import com.vdroog1.shamans.screen.GameScreen;
+import com.vdroog1.shamans.view.Message;
 
 /**
  * Created by kettricken on 18.04.2015.
@@ -19,6 +20,21 @@ public class Player extends Sprite implements MovementListener {
 
     public static final float FALL_TIME = 0.8f;
     private GameScreen gameScreen;
+
+    private Message message;
+    private Array<ArrowButton.Type> spellCasing = new Array<ArrowButton.Type>();
+
+    public void setIsPlayer(boolean isPlayer) {
+        this.isPlayer = isPlayer;
+    }
+
+    public void setMessgae(Message messgae) {
+        this.message = messgae;
+    }
+
+    public Array<ArrowButton.Type> getSpellCasing() {
+        return spellCasing;
+    }
 
     enum State {
         STAND("player", 0, 0, Animation.PlayMode.NORMAL),
@@ -70,7 +86,7 @@ public class Player extends Sprite implements MovementListener {
     private float stateTime;
 
     private float fallingTime = 0;
-    private boolean isPlayer = false;
+    private boolean isPlayer = true;
 
     public Player(GameScreen gameScreen, TiledMapTileLayer collisionLayer) {
         super(ImageCache.getTexture("player"));
@@ -110,7 +126,7 @@ public class Player extends Sprite implements MovementListener {
 
         stateTime += delta;
         if (state.animated && state.animation.isAnimationFinished(stateTime)) {
-            Gdx.app.log("isAnimationFinished ", "current state " + state);
+        //    Gdx.app.log("isAnimationFinished ", "current state " + state);
             if (state == State.STRIKE) {
                 setState(State.FALL);
                 fallingTime = 0;
@@ -119,8 +135,10 @@ public class Player extends Sprite implements MovementListener {
                 onJump();
             } else if (state == State.RIGHT_JUMP_STOP || state == State.LEFT_JUMP_STOP) {
                 setState(State.STAND);
-                if (gameScreen.getSpellCount() == 3) {
-                    gameScreen.castSpell();
+                movementController.stopLegJumping();
+                if (spellCasing.size == 3) {
+                    spellCasing.clear();
+                    gameScreen.castSpell(this);
                 }
             }
 
@@ -141,6 +159,10 @@ public class Player extends Sprite implements MovementListener {
     }
 
     public void update(float delta) {
+        if (!message.process(delta)) {
+            stopCasting();
+        }
+
         if (state == State.DEAD || gameScreen.isGameOver())
             return;
 
@@ -188,7 +210,7 @@ public class Player extends Sprite implements MovementListener {
             gameScreen.gameOver(isPlayer);
         }
 
-        Gdx.app.log("Velocity y ", String.valueOf(velocity.y));
+      //  Gdx.app.log("Velocity y ", String.valueOf(velocity.y));
         if (velocity.y < 0) {
             canJump = collisionY = collidesBottom();
             if (oldCellY <= getCellY(getY())) collisionY = false;
@@ -206,7 +228,12 @@ public class Player extends Sprite implements MovementListener {
 
     }
 
+    private void stopCasting() {
+        spellCasing.clear();
+    }
+
     public void strike() {
+        message.reset();
         if (gameScreen.isGameOver()) return;
 
         setState(State.STRIKE);
@@ -278,7 +305,8 @@ public class Player extends Sprite implements MovementListener {
     }
 
     private void addSpellCasting(ArrowButton.Type type) {
-        gameScreen.addSpellCasting(type);
+        message.reset();
+        spellCasing.add(type);
     }
 
     @Override

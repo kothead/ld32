@@ -7,11 +7,10 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.utils.Array;
 import com.vdroog1.shamans.ShamanGame;
 import com.vdroog1.shamans.data.SkinCache;
+import com.vdroog1.shamans.interfaces.AIController;
 import com.vdroog1.shamans.interfaces.InputController;
-import com.vdroog1.shamans.model.ArrowButton;
 import com.vdroog1.shamans.model.Player;
 import com.vdroog1.shamans.view.Message;
 
@@ -26,9 +25,10 @@ public class GameScreen extends BaseScreen {
     private OrthogonalTiledMapRenderer renderer;
 
     Player player;
+    Player bot;
 
-    private Array<ArrowButton.Type> spellCasting = new Array<ArrowButton.Type>();
-    private Message message;
+
+
 
     boolean gameOver = false;
 
@@ -53,17 +53,25 @@ public class GameScreen extends BaseScreen {
         map = new TmxMapLoader().load("map/map.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, UNIT_SCALE);
 
+        Label label = new Label(null, SkinCache.getDefaultSkin(), "message");
+        stage().addActor(label);
         TiledMapTileLayer tileLayer = (TiledMapTileLayer) map.getLayers().get(0);
         player = new Player(this, tileLayer);
+        player.setIsPlayer(false);
         player.setMovementController(new InputController());
         player.setPosition(50, 5 * tileLayer.getTileHeight() * UNIT_SCALE);
+        player.setMessgae(new Message(label, player, player.getSpellCasing()));
+
+        label = new Label(null, SkinCache.getDefaultSkin(), "message");
+        stage().addActor(label);
+        bot = new Player(this, tileLayer);
+        bot.setIsPlayer(false);
+        bot.setMovementController(new AIController(bot));
+        bot.setPosition(150, 5 * tileLayer.getTileHeight() * UNIT_SCALE);
+        bot.setMessgae(new Message(label, bot, bot.getSpellCasing()));
 
         mapHeight = tileLayer.getHeight() * tileLayer.getTileHeight() * UNIT_SCALE;
         mapWidth = tileLayer.getWidth() * tileLayer.getTileWidth() * UNIT_SCALE;
-
-        Label label = new Label(null, SkinCache.getDefaultSkin(), "message");
-        stage().addActor(label);
-        message = new Message(label, player, spellCasting);
 
         Gdx.input.setInputProcessor((InputController) player.getMovementController());
     }
@@ -74,28 +82,26 @@ public class GameScreen extends BaseScreen {
         Gdx.gl20.glClearColor(0.8f, 0.8f, 1, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        moveCamera();
-        player.update(delta);
-        if (!message.process(delta)) {
-            stopCasting();
-        }
+        moveCamera(bot);
+    //    player.update(delta);
+        bot.update(delta);
+
 
         renderer.setView(getCamera());
         renderer.render();
 
         renderer.getBatch().begin();
-        player.draw(renderer.getBatch());
+    //    player.draw(renderer.getBatch());
+        bot.draw(renderer.getBatch());
         renderer.getBatch().end();
 
         stage().act(delta);
         stage().draw();
     }
 
-    private void stopCasting() {
-        spellCasting.clear();
-    }
 
-    private void moveCamera() {
+
+    private void moveCamera(Player player) {
         float positionX = player.getX() + player.getWidth() / 2;
         float positionY = player.getY() + player.getHeight() / 2;
 
@@ -116,18 +122,8 @@ public class GameScreen extends BaseScreen {
 
     }
 
-    public void addSpellCasting(ArrowButton.Type type) {
-        spellCasting.add(type);
-    }
-
-    public int getSpellCount() {
-        return spellCasting.size;
-    }
-
-    public void castSpell() {
-        spellCasting.clear();
-        message.reset();
-        player.strike();
+    public void castSpell(Player fromPlayer) {
+        fromPlayer.strike();
     }
 
     public void gameOver(boolean victory) {

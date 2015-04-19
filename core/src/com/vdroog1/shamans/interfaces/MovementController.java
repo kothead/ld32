@@ -13,4 +13,6 @@ public interface MovementController {
     public boolean isMovingRight();
     public boolean isMovingLeft();
     public void setMovementListener(MovementListener movementListener);
+
+    public void stopLegJumping();
 }
