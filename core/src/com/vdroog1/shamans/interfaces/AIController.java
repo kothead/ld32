@@ -2,6 +2,8 @@ package com.vdroog1.shamans.interfaces;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.vdroog1.shamans.ai.AStarPathFinder;
+import com.vdroog1.shamans.ai.Path;
 import com.vdroog1.shamans.model.Player;
 
 /**
@@ -10,10 +12,10 @@ import com.vdroog1.shamans.model.Player;
 public class AIController implements MovementController {
 
     Array<Vector2> positions = new Array(){{
-        add(new Vector2(500, 128));
-        add(new Vector2(500, 160));
+        add(new Vector2(500, 700));
+/*        add(new Vector2(500, 160));
         add(new Vector2(150, 160));
-        add(new Vector2(0, 128));
+        add(new Vector2(0, 128));*/
     }};
 
 
@@ -26,9 +28,14 @@ public class AIController implements MovementController {
 
     float timeToSpell = 0;
 
+    int lastControlPoint = 0;
+
+    Path path;
+    AStarPathFinder pathFinder;
 
     public AIController(Player player) {
         this.player = player;
+        pathFinder = new AStarPathFinder(player.getCollisionLayer());
         setMovementListener(player);
     }
 
@@ -39,7 +46,7 @@ public class AIController implements MovementController {
 
     @Override
     public void progress(float delta) {
-        if (!isCasting)
+/*        if (!isCasting)
             timeToSpell += delta;
 
         if (timeToSpell > 2 && !isCasting) {
@@ -48,12 +55,17 @@ public class AIController implements MovementController {
             timeToSpell = 0;
         }
 
-        if (positions.size == 0 || isCasting) {
+        if (isCasting) return;*/
+
+        if (path == null || path.getLength() == 0) {
+            path = pathFinder.findPath(new Vector2(player.getX(), player.getY()), positions.get(lastControlPoint));
+            if (path != null) lastControlPoint++;
             isMovingRight = false;
             isMovingLeft = false;
             return;
         }
-        Vector2 target = positions.get(0);
+
+        Vector2 target = path.getStep(0);
         float deltaY = target.y - player.getY();
         float deltaX = Math.abs(target.x - player.getX());
         if (deltaY > 1) {
@@ -72,7 +84,7 @@ public class AIController implements MovementController {
             isMovingLeft = false;
         }
         if (deltaY < 1 && deltaX < 5) {
-            positions.removeIndex(0);
+            path.removeStep(0);
             isMovingRight = false;
             isMovingLeft = false;
         }

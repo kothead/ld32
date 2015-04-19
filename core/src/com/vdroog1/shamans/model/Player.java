@@ -36,6 +36,10 @@ public class Player extends Sprite implements MovementListener {
         return spellCasing;
     }
 
+    public TiledMapTileLayer getCollisionLayer() {
+        return collisionLayer;
+    }
+
     enum State {
         STAND("player", 0, 0, Animation.PlayMode.NORMAL),
         STRIKE("player-strike", 3, 0.6f, Animation.PlayMode.NORMAL),

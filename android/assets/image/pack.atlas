@@ -1,103 +1,138 @@
 
 pack.png
-size: 1024,128
+size: 512,512
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 left_arrow
   rotate: false
-  xy: 2, 2
+  xy: 272, 427
   size: 58, 75
   orig: 58, 75
   offset: 0, 0
   index: -1
+lightning
+  rotate: false
+  xy: 2, 2
+  size: 50, 500
+  orig: 50, 500
+  offset: 0, 0
+  index: 1
+lightning
+  rotate: false
+  xy: 56, 2
+  size: 50, 500
+  orig: 50, 500
+  offset: 0, 0
+  index: 2
+lightning
+  rotate: false
+  xy: 110, 2
+  size: 50, 500
+  orig: 50, 500
+  offset: 0, 0
+  index: 3
+lightning
+  rotate: false
+  xy: 164, 2
+  size: 50, 500
+  orig: 50, 500
+  offset: 0, 0
+  index: 4
+lightning
+  rotate: false
+  xy: 218, 2
+  size: 50, 500
+  orig: 50, 500
+  offset: 0, 0
+  index: 5
 player
   rotate: false
-  xy: 64, 2
+  xy: 272, 348
   size: 58, 75
   orig: 58, 75
   offset: 0, 0
   index: -1
 player-dead
   rotate: false
-  xy: 126, 19
+  xy: 334, 444
   size: 75, 58
   orig: 75, 58
   offset: 0, 0
   index: -1
 player-fall
   rotate: false
-  xy: 205, 2
+  xy: 272, 269
   size: 58, 75
   orig: 58, 75
   offset: 0, 0
   index: -1
 player-strike
   rotate: false
-  xy: 267, 2
+  xy: 334, 365
   size: 58, 75
   orig: 58, 75
   offset: 0, 0
   index: 1
 player-strike
   rotate: false
-  xy: 329, 2
+  xy: 272, 190
   size: 58, 75
   orig: 58, 75
   offset: 0, 0
   index: 2
 player-strike
   rotate: false
-  xy: 391, 2
+  xy: 334, 286
   size: 58, 75
   orig: 58, 75
   offset: 0, 0
   index: 3
 playerl
   rotate: false
-  xy: 453, 2
+  xy: 272, 111
   size: 58, 75
   orig: 58, 75
   offset: 0, 0
   index: 1
 playerl
   rotate: false
-  xy: 453, 2
+  xy: 272, 111
   size: 58, 75
   orig: 58, 75
   offset: 0, 0
   index: 3
 playerl
   rotate: false
-  xy: 515, 2
+  xy: 334, 207
   size: 58, 75
   orig: 58, 75
   offset: 0, 0
   index: 2
 playerr
   rotate: false
-  xy: 577, 2
+  xy: 272, 32
   size: 58, 75
   orig: 58, 75
   offset: 0, 0
   index: 1
 playerr
   rotate: false
-  xy: 577, 2
+  xy: 272, 32
   size: 58, 75
   orig: 58, 75
   offset: 0, 0
   index: 4
 playerr
   rotate: false
-  xy: 639, 2
+  xy: 334, 128
   size: 58, 75
   orig: 58, 75
   offset: 0, 0
   index: 2
 right_arrow
   rotate: false
-  xy: 701, 2
+  xy: 334, 49
   size: 58, 75
   orig: 58, 75
   offset: 0, 0

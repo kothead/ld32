@@ -27,9 +27,6 @@ public class GameScreen extends BaseScreen {
     Player player;
     Player bot;
 
-
-
-
     boolean gameOver = false;
 
     public GameScreen(ShamanGame game) {
