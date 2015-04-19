@@ -211,10 +211,8 @@ public class Player extends Sprite implements MovementListener {
 
         if (state == State.FALL) {
             fallingTime += delta;
-            if (getY() + getHeight() < 0) {
-                if (isPlayer)
-                    gameScreen.gameOver(false);
-                return;
+            if (getY() < 4 * gameScreen.getTileHeight()) {
+                setState(State.STAND);
             }
             if (fallingTime < FALL_TIME)
                 return;
@@ -247,6 +245,10 @@ public class Player extends Sprite implements MovementListener {
             }
             setY(getY() - velocity.y * delta);
             velocity.y = 0;
+        }
+
+        if (getY() < 4 * gameScreen.getTileHeight()) {
+            setY(4 * gameScreen.getTileHeight());
         }
 
     }

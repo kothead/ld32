@@ -29,9 +29,6 @@ public class GameScreen extends BaseScreen {
     private OrthogonalTiledMapRenderer renderer;
     private LightningController lightnings;
 
-  //  Player player;
-  //  Player bot;
-
     Array<Player> players = new Array<Player>();
 
     boolean gameOver = false;
