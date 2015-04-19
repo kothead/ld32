@@ -167,11 +167,13 @@ public class Player extends Sprite implements MovementListener {
             stopCasting();
         }
 
-        if (state == State.DEAD || gameScreen.isGameOver())
+        updateState(delta);
+        if (state == State.DEAD || gameScreen.isGameOver() ||
+                state == State.STRIKE)
             return;
 
         movementController.progress(delta);
-        updateState(delta);
+
 
         velocity.y -= gravity;
 
@@ -225,7 +227,10 @@ public class Player extends Sprite implements MovementListener {
         }
 
         if (collisionY) {
-            if (state == State.FALL) setState(State.STAND);
+            if (state == State.FALL) {
+                setState(State.STAND);
+                movementController.onFallen();
+            }
             setY(getY() - velocity.y * delta);
             velocity.y = 0;
         }

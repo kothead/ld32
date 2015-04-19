@@ -86,9 +86,8 @@ public class GameScreen extends BaseScreen {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         moveCamera(bot);
-    //    player.update(delta);
+        player.update(delta);
         bot.update(delta);
-
 
         renderer.setView(getCamera());
         renderer.render();
@@ -96,7 +95,7 @@ public class GameScreen extends BaseScreen {
         renderer.getBatch().begin();
         lightnings.process(renderer.getBatch());
         
-    //    player.draw(renderer.getBatch());
+        player.draw(renderer.getBatch());
         bot.draw(renderer.getBatch());
         renderer.getBatch().end();
 
@@ -126,8 +125,16 @@ public class GameScreen extends BaseScreen {
     }
 
     public void castSpell(Player fromPlayer) {
-        fromPlayer.strike();
-        lightnings.strike(fromPlayer);
+        if (fromPlayer == player) {
+            strike(bot);
+        } else
+            strike(player);
+
+    }
+
+    private void strike(Player player) {
+        player.strike();
+        lightnings.strike(player);
     }
 
     public void gameOver(boolean victory) {

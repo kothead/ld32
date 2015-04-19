@@ -3,7 +3,7 @@ package com.vdroog1.shamans.ai;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.vdroog1.shamans.screen.GameScreen;
+import com.vdroog1.shamans.util.Utils;
 
 /**
  * Created by kettricken on 19.04.2015.
@@ -15,14 +15,14 @@ public class AStarPathFinder {
 
     private TiledMapTileLayer tiledMap;
 
-    private int maxSearchDistance;
+    private int maxSearchDistance = 500;
 
     private Node[][] nodes;
 
     private boolean[][] visited;
 
     private AStarHeuristics heuristics;
-    private String blockedKey = "blocked-top";
+
 
     public AStarPathFinder(TiledMapTileLayer tiledMap) {
         heuristics = new AStarHeuristics();
@@ -38,7 +38,8 @@ public class AStarPathFinder {
     }
 
     public Path findPath(Vector2 start, Vector2 target) {
-        if (isCellBlocked(target.x, target.y)) return null;
+        if (start.x < 0 || start.y < 0)
+            return null;
 
         nodes[(int)start.x][(int)start.y].cost = 0;
         nodes[(int)start.x][(int)start.y].depth = 0;
@@ -66,9 +67,9 @@ public class AStarPathFinder {
                     }
 
                     int xp = x + current.x;
-                    int yp = x + current.y;
+                    int yp = y + current.y;
 
-                    if (!isCellBlocked(xp, yp)) {
+                    if (xp < 0 || yp < 0 || !Utils.isCellBlocked(tiledMap, xp, yp)) {
                         continue;
                     }
 
@@ -104,7 +105,7 @@ public class AStarPathFinder {
         Path path = new Path();
         Node targetNode = nodes[(int) target.x][(int) target.y];
         while (targetNode != nodes[(int) start.x][(int) start.y]) {
-            path.prependStep(targetNode.x, targetNode.y);
+            path.prependStep(targetNode.x, targetNode.y + 1);
             targetNode = targetNode.parent;
         }
         path.prependStep((int) start.x, (int) start.y);
@@ -156,7 +157,7 @@ public class AStarPathFinder {
         boolean invalid = (x < 0) || (y < 0) || (x >= tiledMap.getWidth()) || (y >= tiledMap.getHeight());
 
         if (!invalid && ((sx != x) || (sy != y))) {
-            invalid = isCellBlocked(x, y);
+            invalid = Utils.isCellBlocked(tiledMap, x, y);
         }
 
         return !invalid;
@@ -164,20 +165,6 @@ public class AStarPathFinder {
 
     public float getHeuristicCost(int x, int y, int tx, int ty) {
         return heuristics.getCost(tiledMap, x, y, tx, ty);
-    }
-
-    private boolean isCellBlocked(float x, float y) {
-        TiledMapTileLayer.Cell cell = tiledMap.getCell(getCellX(x), getCellY(y));
-        return cell != null && cell.getTile() != null
-                && cell.getTile().getProperties().containsKey(blockedKey);
-    }
-
-    private int getCellX(float x) {
-        return (int) (x / tiledMap.getTileWidth() / GameScreen.UNIT_SCALE);
-    }
-
-    private int getCellY(float y) {
-        return (int) (y / tiledMap.getTileHeight() / GameScreen.UNIT_SCALE);
     }
 
     private class Node implements Comparable {

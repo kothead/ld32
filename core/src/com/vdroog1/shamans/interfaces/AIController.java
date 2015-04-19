@@ -1,10 +1,12 @@
 package com.vdroog1.shamans.interfaces;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.vdroog1.shamans.ai.AStarPathFinder;
 import com.vdroog1.shamans.ai.Path;
 import com.vdroog1.shamans.model.Player;
+import com.vdroog1.shamans.screen.GameScreen;
 
 /**
  * Created by kettricken on 19.04.2015.
@@ -12,10 +14,10 @@ import com.vdroog1.shamans.model.Player;
 public class AIController implements MovementController {
 
     Array<Vector2> positions = new Array(){{
-        add(new Vector2(500, 700));
-/*        add(new Vector2(500, 160));
-        add(new Vector2(150, 160));
-        add(new Vector2(0, 128));*/
+        add(new Vector2(41, 799 - 773));
+        add(new Vector2(34, 799 - 756));
+        add(new Vector2(35, 799 - 744));
+        add(new Vector2(31, 799 - 736));
     }};
 
 
@@ -29,9 +31,12 @@ public class AIController implements MovementController {
     float timeToSpell = 0;
 
     int lastControlPoint = 0;
+    boolean isPathSearchRunning = false;
 
     Path path;
     AStarPathFinder pathFinder;
+
+    Vector2 target = new Vector2();
 
     public AIController(Player player) {
         this.player = player;
@@ -58,14 +63,19 @@ public class AIController implements MovementController {
         if (isCasting) return;*/
 
         if (path == null || path.getLength() == 0) {
-            path = pathFinder.findPath(new Vector2(player.getX(), player.getY()), positions.get(lastControlPoint));
-            if (path != null) lastControlPoint++;
+            if (!isPathSearchRunning && lastControlPoint < positions.size) {
+                findPath();
+            }
+
             isMovingRight = false;
             isMovingLeft = false;
             return;
         }
 
-        Vector2 target = path.getStep(0);
+        if (isPathSearchRunning) return;
+
+        target.set(path.getStep(0).x * player.getCollisionLayer().getTileWidth() * GameScreen.UNIT_SCALE,
+                path.getStep(0).y * player.getCollisionLayer().getTileHeight() * GameScreen.UNIT_SCALE);
         float deltaY = target.y - player.getY();
         float deltaX = Math.abs(target.x - player.getX());
         if (deltaY > 1) {
@@ -83,11 +93,50 @@ public class AIController implements MovementController {
             isMovingRight = false;
             isMovingLeft = false;
         }
+
+
         if (deltaY < 1 && deltaX < 5) {
             path.removeStep(0);
             isMovingRight = false;
             isMovingLeft = false;
         }
+    }
+
+    private void findPath() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                Gdx.app.log("Test", "start path search");
+                isPathSearchRunning = true;
+                Vector2 closestControlPoint = getControlPoint();
+                Gdx.app.log("Test", "point [" + closestControlPoint.x + ", " + closestControlPoint.y + " ]");
+                path = pathFinder.findPath(new Vector2(player.getCellX(), player.getCellY()), closestControlPoint);
+                if (path != null) lastControlPoint++;
+                isPathSearchRunning = false;
+                if (path != null) {
+                    String points = "[ ";
+                    for (int i = 0; i < path.getLength(); i++) {
+                        points += String.format("(%f, %f), ", path.getStep(i).x, path.getStep(i).y);
+                    }
+                    points += "]";
+                    Gdx.app.log("Test", "path search " + points);
+                } else {
+                    Gdx.app.log("Test", "path is null");
+                }
+            }
+        }).start();
+    }
+
+    private Vector2 getControlPoint() {
+        Vector2 closestControlPoint = null;
+        int minDif = Integer.MAX_VALUE;
+        for (Vector2 controlPoint : positions) {
+            float dif = controlPoint.y - player.getCellY();
+            if (dif > 0 && dif < minDif){
+                closestControlPoint = controlPoint;
+            }
+        }
+        return closestControlPoint;
     }
 
     @Override
@@ -102,7 +151,7 @@ public class AIController implements MovementController {
 
     @Override
     public void setMovementListener(MovementListener movementListener) {
-        if (player instanceof MovementListener)
+        if (player != null)
             listener = player;
 
     }
@@ -110,5 +159,10 @@ public class AIController implements MovementController {
     @Override
     public void stopLegJumping() {
         isCasting = false;
+    }
+
+    @Override
+    public void onFallen() {
+        findPath();
     }
 }

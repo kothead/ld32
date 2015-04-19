@@ -43,6 +43,11 @@ public class InputController extends InputAdapter implements MovementController 
     }
 
     @Override
+    public void onFallen() {
+
+    }
+
+    @Override
     public boolean keyDown(int keycode) {
         switch (keycode){
             case Input.Keys.W:

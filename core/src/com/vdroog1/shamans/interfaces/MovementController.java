@@ -15,4 +15,6 @@ public interface MovementController {
     public void setMovementListener(MovementListener movementListener);
 
     public void stopLegJumping();
+
+    public void onFallen();
 }

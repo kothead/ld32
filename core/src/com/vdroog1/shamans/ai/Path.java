@@ -42,7 +42,9 @@ public class Path {
         steps.removeIndex(i);
     }
 
-    private class Step extends Vector2 {
+    public class Step extends Vector2 {
+
+        boolean justStarted = true;
 
         public Step(int x, int y) {
             set(x, y);
@@ -59,6 +61,14 @@ public class Path {
                 return (o.x == x) && (o.y == y);
             }
             return false;
+        }
+
+        public boolean justStarted() {
+            return justStarted;
+        }
+
+        public void setJustStarted(boolean justStarted) {
+            this.justStarted = justStarted;
         }
     }
 }
