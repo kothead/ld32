@@ -6,7 +6,9 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Array;
 import com.vdroog1.shamans.ShamanGame;
 import com.vdroog1.shamans.data.SkinCache;
 import com.vdroog1.shamans.interfaces.AIController;
@@ -27,10 +29,10 @@ public class GameScreen extends BaseScreen {
     private OrthogonalTiledMapRenderer renderer;
     private LightningController lightnings;
 
-    Player player;
-    Player bot;
+  //  Player player;
+  //  Player bot;
 
-    //Array<Player> players = new Array<Player>();
+    Array<Player> players = new Array<Player>();
 
     boolean gameOver = false;
 
@@ -56,29 +58,34 @@ public class GameScreen extends BaseScreen {
         map = new TmxMapLoader().load("map/map.tmx");
         renderer = new OrthogonalTiledMapRenderer(map, UNIT_SCALE);
 
-        Label label = new Label(null, SkinCache.getDefaultSkin(), "message");
-        stage().addActor(label);
         TiledMapTileLayer tileLayer = (TiledMapTileLayer) map.getLayers().get(0);
-        player = new Player(this, tileLayer);
-        player.setIsPlayer(false);
-        player.setMovementController(new InputController());
-        player.setPosition(50, 5 * tileLayer.getTileHeight() * UNIT_SCALE);
-        player.setMessgae(new Message(label, player, player.getSpellCasing()));
-
-        label = new Label(null, SkinCache.getDefaultSkin(), "message");
-        stage().addActor(label);
-        bot = new Player(this, tileLayer);
-        bot.setIsPlayer(false);
-        bot.setMovementController(new AIController(bot));
-        bot.setPosition(150, 5 * tileLayer.getTileHeight() * UNIT_SCALE);
-        bot.setMessgae(new Message(label, bot, bot.getSpellCasing()));
-
         tileWidth = tileLayer.getTileWidth() * UNIT_SCALE;
         tileHeight = tileLayer.getTileHeight() * UNIT_SCALE;
         mapWidth = tileLayer.getWidth() * tileWidth;
         mapHeight = tileLayer.getHeight() * tileHeight;
 
-        Gdx.input.setInputProcessor((InputController) player.getMovementController());
+        generatePlayers(tileLayer);
+
+        Gdx.input.setInputProcessor((InputController) players.get(0).getMovementController());
+    }
+
+    private void generatePlayers(TiledMapTileLayer tileLayer) {
+        for (int i = 0; i < PLAYERS_NUM(); i++) {
+            Label label = new Label(null, SkinCache.getDefaultSkin(), "message");
+            stage().addActor(label);
+
+            Player player = new Player(this, tileLayer);
+            player.setIsPlayer(i == 0);
+            player.setMovementController(i ==0 ? new InputController() : new AIController(player));
+            float x = MathUtils.random(0, getWorldWidth() - player.getWidth());
+            player.setPosition(x, 5 * getTileHeight());
+            player.setMessgae(new Message(label, player, player.getSpellCasing()));
+            players.add(player);
+        }
+    }
+
+    private int PLAYERS_NUM() {
+        return 3;
     }
 
     @Override
@@ -87,22 +94,39 @@ public class GameScreen extends BaseScreen {
         Gdx.gl20.glClearColor(0.8f, 0.8f, 1, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        moveCamera(player);
-        player.update(delta, bot);
-        bot.update(delta, player);
+        moveCamera(players.get(0));
+        for (Player player : players) {
+            Player closestPlayer = getClosestPlayer(player);
+            player.update(delta, closestPlayer);
+        }
 
         renderer.setView(getCamera());
         renderer.render();
 
         renderer.getBatch().begin();
         lightnings.process(renderer.getBatch());
-        
-        player.draw(renderer.getBatch());
-        bot.draw(renderer.getBatch());
+        for (Player player : players) {
+            player.draw(renderer.getBatch());
+        }
         renderer.getBatch().end();
 
         stage().act(delta);
         stage().draw();
+    }
+
+    private Player getClosestPlayer(Player player) {
+        float distance = Float.MAX_VALUE;
+        Player closestPlayer = null;
+        for (int i = 0; i< players.size; i++) {
+            Player p = players.get(i);
+            if (p == player) continue;
+            float d = Math.abs(player.getY() - p.getY());
+            if (d < distance) {
+                distance = d;
+                closestPlayer = p;
+            }
+        }
+        return closestPlayer;
     }
 
     private void moveCamera(Player player) {
@@ -127,12 +151,8 @@ public class GameScreen extends BaseScreen {
     }
 
     public void castSpell(Player fromPlayer) {
-        if (fromPlayer == player) {
-            strike(fromPlayer, bot);
-        } else {
-            strike(fromPlayer, player);
-        }
-
+        Player closestPlayer = getClosestPlayer(fromPlayer);
+        strike(fromPlayer, closestPlayer);
     }
 
     private void strike(Player from, Player to) {

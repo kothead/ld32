@@ -70,13 +70,13 @@ public class AIController implements MovementController {
                 else listener.onLeftLegJump();
             }
             isCasting = true;
-        } /*else if (distance > 200 && distance < 400 && !isCasting && timeBetweenSpells > 3) {
+        } else if (distance > 200 && distance < 400 && !isCasting && timeBetweenSpells > 3) {
             int randomNum = MathUtils.random(0, 1);
             if (randomNum == 0) listener.onLeftLegJump();
             else listener.onRightLegJump();
             isCasting = true;
             timeBetweenSpells = 0;
-        }*/
+        }
 
         if (isCasting) return;
 
@@ -118,9 +118,6 @@ public class AIController implements MovementController {
             isMovingRight = false;
             isMovingLeft = false;
         }
-
-        isMovingRight = false;
-        isMovingLeft = false;
     }
 
     private void findPath() {
