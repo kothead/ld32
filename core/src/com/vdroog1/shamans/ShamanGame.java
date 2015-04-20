@@ -7,6 +7,7 @@ import com.vdroog1.shamans.data.ImageCache;
 import com.vdroog1.shamans.data.SkinCache;
 import com.vdroog1.shamans.data.SoundCache;
 import com.vdroog1.shamans.screen.GameScreen;
+import com.vdroog1.shamans.screen.MenuScreen;
 
 public class ShamanGame extends Game {
 
@@ -16,7 +17,7 @@ public class ShamanGame extends Game {
         SkinCache.load();
         SoundCache.load();
         Gdx.input.setCatchBackKey(true);
-        setGameScreen();
+        setMenuScreen();
     }
 
 	@Override
@@ -40,5 +41,8 @@ public class ShamanGame extends Game {
 
     public void setGameScreen() {
         setScreen(new GameScreen(this));
+    }
+    public void setMenuScreen() {
+        setScreen(new MenuScreen(this));
     }
 }

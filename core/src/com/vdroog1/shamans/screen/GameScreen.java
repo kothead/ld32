@@ -1,15 +1,22 @@
 package com.vdroog1.shamans.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputAdapter;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.vdroog1.shamans.ShamanGame;
+import com.vdroog1.shamans.data.ImageCache;
 import com.vdroog1.shamans.data.SkinCache;
 import com.vdroog1.shamans.interfaces.AIController;
 import com.vdroog1.shamans.interfaces.InputController;
@@ -23,6 +30,7 @@ import com.vdroog1.shamans.view.Message;
 public class GameScreen extends BaseScreen {
 
     public static final int UNIT_SCALE = 4;
+    public static final int PLAYER_NUM = 3;
     private TiledMap map;
     private float mapWidth, mapHeight;
     private float tileWidth, tileHeight;
@@ -32,6 +40,11 @@ public class GameScreen extends BaseScreen {
     Array<Player> players = new Array<Player>();
 
     boolean gameOver = false;
+    boolean gamePaused = false;
+
+    Image restart;
+    Image pause;
+    Image play;
 
     public GameScreen(ShamanGame game) {
         super(game);
@@ -63,11 +76,69 @@ public class GameScreen extends BaseScreen {
 
         generatePlayers(tileLayer);
 
-        Gdx.input.setInputProcessor((InputController) players.get(0).getMovementController());
+        initGui();
+
+        InputMultiplexer inputMultiplexer = new InputMultiplexer(stage());
+        inputMultiplexer.addProcessor((InputController) players.get(0).getMovementController());
+        inputMultiplexer.addProcessor(new InputAdapter() {
+            @Override
+            public boolean keyUp(int keycode) {
+                if (keycode == Input.Keys.ESCAPE) {
+                    if (isPlayable()) {
+                        pauseGame();
+                    }
+                }
+                return super.keyUp(keycode);
+            }
+        });
+        Gdx.input.setInputProcessor(inputMultiplexer);
+    }
+
+    private void pauseGame() {
+        gamePaused = true;
+
+        pause.setPosition(getCamera().position.x - pause.getWidth() / 2, getCamera().position.y);
+        restart.setPosition(getCamera().position.x + 50, pause.getY() - restart.getHeight() - 50);
+        play.setPosition(getCamera().position.x - restart.getWidth() - 50, pause.getY() - restart.getHeight() - 50);
+
+        stage().addActor(pause);
+        stage().addActor(restart);
+        stage().addActor(play);
+    }
+
+    private void initGui() {
+        pause = new Image(ImageCache.getTexture("pause"));
+        restart = new Image(ImageCache.getTexture("restart"));
+        play = new Image(ImageCache.getTexture("play"));
+
+        restart.addListener(new ClickListener(){
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+                getGame().setGameScreen();
+            }
+        });
+
+        play.addListener(new ClickListener(){
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                super.touchUp(event, x, y, pointer, button);
+                gamePaused = false;
+                stage().clear();
+            }
+        });
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        stage().dispose();
+        map.dispose();
+        renderer.dispose();
     }
 
     private void generatePlayers(TiledMapTileLayer tileLayer) {
-        for (int i = 0; i < PLAYERS_NUM(); i++) {
+        for (int i = 0; i < PLAYER_NUM; i++) {
             Label label = new Label(null, SkinCache.getDefaultSkin(), "message");
             stage().addActor(label);
 
@@ -75,14 +146,10 @@ public class GameScreen extends BaseScreen {
             player.setIsPlayer(i == 0);
             player.setMovementController(i ==0 ? new InputController() : new AIController(player));
             float x = MathUtils.random(0, getWorldWidth() - player.getWidth());
-            player.setPosition(x, 5 * getTileHeight());
+            player.setPosition(x, 4 * getTileHeight());
             player.setMessgae(new Message(label, player, player.getSpellCasing()));
             players.add(player);
         }
-    }
-
-    private int PLAYERS_NUM() {
-        return 3;
     }
 
     @Override
@@ -92,9 +159,12 @@ public class GameScreen extends BaseScreen {
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         moveCamera(players.get(0));
-        for (Player player : players) {
-            Player closestPlayer = getClosestPlayer(player);
-            player.update(delta, closestPlayer);
+
+        if (isPlayable()) {
+            for (Player player : players) {
+                Player closestPlayer = getClosestPlayer(player);
+                player.update(delta, closestPlayer);
+            }
         }
 
         renderer.setView(getCamera());
@@ -158,16 +228,16 @@ public class GameScreen extends BaseScreen {
     }
 
     public void gameOver(boolean victory) {
-        Label label = new Label(null, SkinCache.getDefaultSkin(), "message");
-        String message = "";
+        Image result;
         if (victory)
-            message = "VICTORY!!! YOU ARE THE BOSS!!!";
+            result = new Image(ImageCache.getTexture("victory"));
         else
-            message = "GAME OVER, LOSER!!!";
-        label.setText(message);
+            result = new Image(ImageCache.getTexture("game-over"));
 
-        label.setPosition(getCamera().position.x - label.getTextBounds().x, getCamera().position.y);
-        stage().addActor(label);
+        result.setPosition(getCamera().position.x - result.getWidth() / 2, getCamera().position.y);
+        restart.setPosition(getCamera().position.x - restart.getWidth() / 2, result.getY() - restart.getHeight() - 50);
+        stage().addActor(result);
+        stage().addActor(restart);
         gameOver = true;
     }
 
@@ -181,5 +251,9 @@ public class GameScreen extends BaseScreen {
 
     public float getTileHeight() {
         return tileHeight;
+    }
+
+    public boolean isPlayable() {
+        return !gamePaused && !gameOver;
     }
 }

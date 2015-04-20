@@ -337,7 +337,7 @@ public class Player extends Sprite implements MovementListener {
 
     @Override
     public void onJump() {
-        if (state == State.STRIKE || gameScreen.isGameOver())
+        if (state == State.STRIKE || !gameScreen.isPlayable())
             return;
         if (canJump) {
             velocity.y = speed.y;
@@ -347,7 +347,7 @@ public class Player extends Sprite implements MovementListener {
 
     @Override
     public void onLeftLegJump() {
-        if (state == State.STRIKE || gameScreen.isGameOver())
+        if (state == State.STRIKE || !gameScreen.isPlayable())
             return;
         if (!isCastingJumping()) {
             addSpellCasting(ArrowButton.Type.LEFT);
@@ -362,7 +362,7 @@ public class Player extends Sprite implements MovementListener {
 
     @Override
     public void onRightLegJump() {
-        if (state == State.STRIKE || gameScreen.isGameOver())
+        if (state == State.STRIKE || !gameScreen.isPlayable())
             return;
         if (!isCastingJumping()) {
             addSpellCasting(ArrowButton.Type.RIGHT);
