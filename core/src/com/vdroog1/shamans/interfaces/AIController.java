@@ -41,7 +41,6 @@ public class AIController implements MovementController {
     float timeBetweenSpells = 0;
     float wakeUpTimer = 0;
 
-    int lastControlPoint = 0;
     boolean isPathSearchRunning = false;
 
     Path path;
@@ -55,11 +54,6 @@ public class AIController implements MovementController {
         setMovementListener(player);
     }
 
-    public void reset() {
-        isMovingLeft = false;
-        isMovingRight = false;
-    }
-
     @Override
     public void progress(float delta, Player closestPlayer) {
         if (isSleeping) {
@@ -68,7 +62,7 @@ public class AIController implements MovementController {
 
         timeBetweenSpells += delta;
 
-        float distance = Math.abs(closestPlayer.getY() - player.getY());
+        float distance = closestPlayer.getY() - player.getY();
         if (closestPlayer.getSpellCasing().size >= 2 && !isCasting
                 && closestPlayer.getSpellCasing().size > player.getSpellCasing().size) {
             int spellSize = player.getSpellCasing().size;
@@ -83,7 +77,7 @@ public class AIController implements MovementController {
                 else listener.onLeftLegJump();
             }
             isCasting = true;
-        } else if (distance > 200 && !isCasting && timeBetweenSpells > 1.5) {
+        } else if ((distance > 200 || distance < -50) && !isCasting && timeBetweenSpells > 1.5) {
             int randomNum = MathUtils.random(0, 1);
             if (randomNum == 0) listener.onLeftLegJump();
             else listener.onRightLegJump();
@@ -98,7 +92,7 @@ public class AIController implements MovementController {
         }
 
         if (path == null || path.getLength() == 0) {
-            if (!isPathSearchRunning && lastControlPoint < positions.size) {
+            if (!isPathSearchRunning) {
                 findPath();
             }
 
@@ -154,20 +148,14 @@ public class AIController implements MovementController {
                 Gdx.app.log("Test", "start path search");
                 isPathSearchRunning = true;
                 Vector2 closestControlPoint = getControlPoint();
+                if (closestControlPoint == null) {
+                    return;
+                }
                 path = pathFinder.findPath(new Vector2(player.getCellX(), player.getCellY()), closestControlPoint);
-                if (path != null) lastControlPoint++;
                 isPathSearchRunning = false;
-                if (path != null) {
-                    String points = "[ ";
-                    for (int i = 0; i < path.getLength(); i++) {
-                        points += String.format("(%f, %f), ", path.getStep(i).x, path.getStep(i).y);
-                    }
-                    points += "]";
-                    Gdx.app.log("Test", "path search " + points);
-                } else {
+                if (path == null) {
                     isSleeping = true;
                     wakeUpTimer = 0;
-                    Gdx.app.log("Test", "path is null");
                 }
             }
         });

@@ -265,18 +265,19 @@ public class Player extends Sprite implements MovementListener {
 
     public boolean strike(Player fromPlayer) {
         Gdx.app.log("Test", "Strike");
-        stopCasting();
-        message.reset();
-
         if (isSpellCanceled(fromPlayer)) {
             Gdx.app.log("Test", "Spell Canceled");
             setState(State.STAND);
+            stopCasting();
+            message.reset();
             return false;
         } else {
             Gdx.app.log("Test", "Spell Works");
             if (gameScreen.isGameOver()) return true;
             movementController.stopLegJumping();
             setState(State.STRIKE);
+            stopCasting();
+            message.reset();
             return true;
         }
     }
