@@ -11,6 +11,13 @@ game-over
   orig: 600, 100
   offset: 0, 0
   index: -1
+left
+  rotate: false
+  xy: 996, 994
+  size: 24, 24
+  orig: 24, 24
+  offset: 0, 0
+  index: -1
 lightning
   rotate: false
   xy: 726, 518
@@ -135,6 +142,13 @@ restart
   xy: 506, 310
   size: 100, 100
   orig: 100, 100
+  offset: 0, 0
+  index: -1
+right
+  rotate: false
+  xy: 406, 214
+  size: 24, 24
+  orig: 24, 24
   offset: 0, 0
   index: -1
 title

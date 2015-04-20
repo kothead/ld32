@@ -210,6 +210,10 @@ public class Player extends Sprite implements MovementListener {
         setX(getX() + velocity.x * delta);
         setY(getY() + velocity.y * delta);
 
+        if (getX() < 0) setX(0);
+        if (getX() > collisionLayer.getWidth() * gameScreen.getTileWidth() - getWidth())
+            setX(collisionLayer.getWidth() * gameScreen.getTileWidth() - getWidth());
+
         if (state == State.FALL) {
             fallingTime += delta;
             if (getY() < 4 * gameScreen.getTileHeight()) {
