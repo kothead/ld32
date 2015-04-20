@@ -4,14 +4,20 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.vdroog1.shamans.ShamanGame;
 import com.vdroog1.shamans.data.ImageCache;
 
@@ -20,10 +26,14 @@ import com.vdroog1.shamans.data.ImageCache;
  */
 public class MenuScreen extends BaseScreen {
 
-    public static final int UNIT_SCALE = 4;
+    private static final float CAMERA_SPEED = 100;
+    private static final int UNIT_SCALE = 3;
 
     private TiledMap map;
+    private Table table;
+    private float mapHeight;
     private OrthogonalTiledMapRenderer renderer;
+    private float cameraSpeed = CAMERA_SPEED;
 
     public MenuScreen(ShamanGame game) {
         super(game);
@@ -45,9 +55,16 @@ public class MenuScreen extends BaseScreen {
             }
         });
 
-        Table table = new Table();
+        TiledMapTileLayer tileLayer = (TiledMapTileLayer) map.getLayers().get(0);
+        float tileHeight = tileLayer.getTileHeight() * UNIT_SCALE;
+        mapHeight = tileLayer.getHeight() * tileHeight;
+
+        table = new Table();
+        table.left().top();
         table.setFillParent(true);
-        table.add(title).center();
+        table.padLeft(50);
+        table.padTop(100);
+        table.add(title).center().left();
         table.row();
         table.add(play);
         stage().addActor(table);
@@ -71,10 +88,23 @@ public class MenuScreen extends BaseScreen {
         Gdx.gl20.glClearColor(0.8f, 0.8f, 1, 1);
         Gdx.gl20.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        float cameraYPos = calcNewCameraPosition(delta);
+        if (cameraYPos > mapHeight - getWorldHeight() / 2f
+            || cameraYPos < getWorldHeight() / 2f) {
+            cameraSpeed = -cameraSpeed;
+            cameraYPos = calcNewCameraPosition(delta);
+        }
+        table.setY(table.getY() + cameraSpeed * delta);
+        getCamera().position.y = cameraYPos;
+
         renderer.setView(getCamera());
         renderer.render();
 
         stage().draw();
+    }
+
+    private float calcNewCameraPosition(float delta) {
+        return getCamera().position.y + cameraSpeed * delta;
     }
 
     @Override
