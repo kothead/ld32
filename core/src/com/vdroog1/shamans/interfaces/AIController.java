@@ -65,12 +65,6 @@ public class AIController implements MovementController {
         if (isSleeping) {
             wakeUpTimer += delta;
         }
-        if (wakeUpTimer > TIME_WAKE_UP) {
-            isSleeping = false;
-        }
-        if (isSleeping) {
-            return;
-        }
 
         timeBetweenSpells += delta;
 
@@ -140,6 +134,13 @@ public class AIController implements MovementController {
     }
 
     private void findPath() {
+        if (isSleeping && wakeUpTimer > TIME_WAKE_UP) {
+            isSleeping = false;
+        }
+        if (isSleeping) {
+            return;
+        }
+
         executor.submit(new Runnable() {
             @Override
             public void run() {
