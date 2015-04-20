@@ -1,166 +1,159 @@
 
 pack.png
-size: 1024,1024
+size: 1024,512
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 game-over
   rotate: false
-  xy: 2, 414
+  xy: 272, 402
   size: 600, 100
   orig: 600, 100
   offset: 0, 0
   index: -1
 left
   rotate: false
-  xy: 996, 994
+  xy: 716, 170
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 lightning
   rotate: false
-  xy: 726, 518
+  xy: 2, 2
   size: 50, 500
   orig: 50, 500
   offset: 0, 0
   index: 1
 lightning
   rotate: false
-  xy: 780, 518
+  xy: 56, 2
   size: 50, 500
   orig: 50, 500
   offset: 0, 0
   index: 2
 lightning
   rotate: false
-  xy: 834, 518
+  xy: 110, 2
   size: 50, 500
   orig: 50, 500
   offset: 0, 0
   index: 3
 lightning
   rotate: false
-  xy: 888, 518
+  xy: 164, 2
   size: 50, 500
   orig: 50, 500
   offset: 0, 0
   index: 4
 lightning
   rotate: false
-  xy: 942, 518
+  xy: 218, 2
   size: 50, 500
   orig: 50, 500
   offset: 0, 0
   index: 5
-pause
-  rotate: false
-  xy: 2, 310
-  size: 500, 100
-  orig: 500, 100
-  offset: 0, 0
-  index: -1
 play
   rotate: false
-  xy: 606, 414
-  size: 100, 100
-  orig: 100, 100
+  xy: 876, 382
+  size: 120, 120
+  orig: 120, 120
   offset: 0, 0
   index: -1
 player
   rotate: false
-  xy: 2, 138
+  xy: 716, 334
   size: 72, 64
   orig: 72, 64
   offset: 0, 0
   index: -1
 player-dance-left
   rotate: false
-  xy: 406, 242
+  xy: 792, 314
   size: 72, 64
   orig: 72, 64
   offset: 0, 0
   index: 1
 player-dance-left
   rotate: false
-  xy: 710, 450
+  xy: 716, 266
   size: 72, 64
   orig: 72, 64
   offset: 0, 0
   index: 2
 player-dance-right
   rotate: false
-  xy: 610, 346
+  xy: 792, 246
   size: 72, 64
   orig: 72, 64
   offset: 0, 0
   index: 1
 player-dance-right
   rotate: false
-  xy: 2, 70
+  xy: 716, 198
   size: 72, 64
   orig: 72, 64
   offset: 0, 0
   index: 2
 player-jump
   rotate: false
-  xy: 78, 138
+  xy: 792, 178
   size: 72, 64
   orig: 72, 64
   offset: 0, 0
   index: -1
 player-strike
   rotate: false
-  xy: 482, 242
+  xy: 800, 110
   size: 72, 64
   orig: 72, 64
   offset: 0, 0
   index: 1
 player-strike
   rotate: false
-  xy: 786, 450
+  xy: 868, 314
   size: 72, 64
   orig: 72, 64
   offset: 0, 0
   index: 2
 player-walk
   rotate: false
-  xy: 2, 2
+  xy: 868, 246
   size: 72, 64
   orig: 72, 64
   offset: 0, 0
   index: 1
 player-walk
   rotate: false
-  xy: 78, 70
+  xy: 868, 178
   size: 72, 64
   orig: 72, 64
   offset: 0, 0
   index: 2
 restart
   rotate: false
-  xy: 506, 310
-  size: 100, 100
-  orig: 100, 100
+  xy: 676, 34
+  size: 120, 120
+  orig: 120, 120
   offset: 0, 0
   index: -1
 right
   rotate: false
-  xy: 406, 214
+  xy: 744, 170
   size: 24, 24
   orig: 24, 24
   offset: 0, 0
   index: -1
 title
   rotate: false
-  xy: 2, 518
-  size: 720, 500
-  orig: 720, 500
+  xy: 272, 158
+  size: 440, 240
+  orig: 440, 240
   offset: 0, 0
   index: -1
 victory
   rotate: false
-  xy: 2, 206
+  xy: 272, 54
   size: 400, 100
   orig: 400, 100
   offset: 0, 0

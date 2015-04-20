@@ -43,7 +43,6 @@ public class GameScreen extends BaseScreen {
     boolean gamePaused = false;
 
     Image restart;
-    Image pause;
     Image play;
 
     public GameScreen(ShamanGame game) {
@@ -86,6 +85,8 @@ public class GameScreen extends BaseScreen {
                 if (keycode == Input.Keys.ESCAPE) {
                     if (isPlayable()) {
                         pauseGame();
+                    } else {
+                        unpauseGame();
                     }
                 }
                 return super.keyUp(keycode);
@@ -97,17 +98,19 @@ public class GameScreen extends BaseScreen {
     private void pauseGame() {
         gamePaused = true;
 
-        pause.setPosition(getCamera().position.x - pause.getWidth() / 2, getCamera().position.y);
-        restart.setPosition(getCamera().position.x + 50, pause.getY() - restart.getHeight() - 50);
-        play.setPosition(getCamera().position.x - restart.getWidth() - 50, pause.getY() - restart.getHeight() - 50);
+        restart.setPosition(getCamera().position.x - restart.getWidth() / 2f + 100, getCamera().position.y - restart.getHeight()  / 2f);
+        play.setPosition(getCamera().position.x - play.getWidth() / 2f - 100, getCamera().position.y - play.getHeight() / 2f);
 
-        stage().addActor(pause);
         stage().addActor(restart);
         stage().addActor(play);
     }
 
+    private void unpauseGame() {
+        gamePaused = false;
+        stage().clear();
+    }
+
     private void initGui() {
-        pause = new Image(ImageCache.getTexture("pause"));
         restart = new Image(ImageCache.getTexture("restart"));
         play = new Image(ImageCache.getTexture("play"));
 
