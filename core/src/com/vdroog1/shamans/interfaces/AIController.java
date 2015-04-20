@@ -10,19 +10,25 @@ import com.vdroog1.shamans.model.ArrowButton;
 import com.vdroog1.shamans.model.Player;
 import com.vdroog1.shamans.screen.GameScreen;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 /**
  * Created by kettricken on 19.04.2015.
  */
 public class AIController implements MovementController {
 
+    private static final float TIME_WAKE_UP = 3;
+
     Array<Vector2> positions = new Array(){{
-        add(new Vector2(41, 799 - 773));
-        add(new Vector2(34, 799 - 756));
-        add(new Vector2(35, 799 - 744));
-        add(new Vector2(31, 799 - 736));
-        add(new Vector2(48, 799 - 759));
+        add(new Vector2(41, 249 - 223));
+        add(new Vector2(34, 249 - 206));
+        add(new Vector2(35, 249 - 196));
+        add(new Vector2(31, 249 - 124));
+        add(new Vector2(48, 249 - 209));
     }};
 
+    private static ExecutorService executor = Executors.newSingleThreadExecutor();
 
     Player player;
     MovementListener listener;
@@ -30,8 +36,10 @@ public class AIController implements MovementController {
     boolean isMovingRight = false;
     boolean isMovingLeft = false;
     boolean isCasting = false;
+    boolean isSleeping = false;
 
     float timeBetweenSpells = 0;
+    float wakeUpTimer = 0;
 
     int lastControlPoint = 0;
     boolean isPathSearchRunning = false;
@@ -54,7 +62,18 @@ public class AIController implements MovementController {
 
     @Override
     public void progress(float delta, Player closestPlayer) {
+        if (isSleeping) {
+            wakeUpTimer += delta;
+        }
+        if (wakeUpTimer > TIME_WAKE_UP) {
+            isSleeping = false;
+        }
+        if (isSleeping) {
+            return;
+        }
+
         timeBetweenSpells += delta;
+
         float distance = closestPlayer.getY() - player.getY();
         if (closestPlayer.getSpellCasing().size >= 2 && !isCasting
                 && closestPlayer.getSpellCasing().size > player.getSpellCasing().size) {
@@ -121,7 +140,7 @@ public class AIController implements MovementController {
     }
 
     private void findPath() {
-        new Thread(new Runnable() {
+        executor.submit(new Runnable() {
             @Override
             public void run() {
                 Gdx.app.log("Test", "start path search");
@@ -139,10 +158,12 @@ public class AIController implements MovementController {
                     points += "]";
                     Gdx.app.log("Test", "path search " + points);
                 } else {
+                    isSleeping = true;
+                    wakeUpTimer = 0;
                     Gdx.app.log("Test", "path is null");
                 }
             }
-        }).start();
+        });
     }
 
     private Vector2 getControlPoint() {
@@ -177,11 +198,13 @@ public class AIController implements MovementController {
     @Override
     public void stopLegJumping() {
         isCasting = false;
+        isSleeping = false;
         findPath();
     }
 
     @Override
     public void onFallen() {
+        isSleeping = false;
         findPath();
     }
 }
