@@ -6,175 +6,147 @@ filter: Nearest,Nearest
 repeat: none
 game-over
   rotate: false
-  xy: 2, 368
+  xy: 2, 414
   size: 600, 100
   orig: 600, 100
   offset: 0, 0
   index: -1
-left_arrow
-  rotate: false
-  xy: 2, 81
-  size: 58, 75
-  orig: 58, 75
-  offset: 0, 0
-  index: -1
 lightning
   rotate: false
-  xy: 726, 472
+  xy: 726, 518
   size: 50, 500
   orig: 50, 500
   offset: 0, 0
   index: 1
 lightning
   rotate: false
-  xy: 780, 472
+  xy: 780, 518
   size: 50, 500
   orig: 50, 500
   offset: 0, 0
   index: 2
 lightning
   rotate: false
-  xy: 834, 472
+  xy: 834, 518
   size: 50, 500
   orig: 50, 500
   offset: 0, 0
   index: 3
 lightning
   rotate: false
-  xy: 888, 472
+  xy: 888, 518
   size: 50, 500
   orig: 50, 500
   offset: 0, 0
   index: 4
 lightning
   rotate: false
-  xy: 942, 472
+  xy: 942, 518
   size: 50, 500
   orig: 50, 500
   offset: 0, 0
   index: 5
 pause
   rotate: false
-  xy: 2, 264
+  xy: 2, 310
   size: 500, 100
   orig: 500, 100
   offset: 0, 0
   index: -1
 play
   rotate: false
-  xy: 606, 368
+  xy: 606, 414
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
 player
   rotate: false
-  xy: 406, 185
-  size: 58, 75
-  orig: 58, 75
+  xy: 2, 138
+  size: 72, 64
+  orig: 72, 64
   offset: 0, 0
   index: -1
-player-dead
+player-dance-left
   rotate: false
-  xy: 710, 410
-  size: 75, 58
-  orig: 75, 58
+  xy: 406, 242
+  size: 72, 64
+  orig: 72, 64
   offset: 0, 0
-  index: -1
-player-fall
+  index: 1
+player-dance-left
   rotate: false
-  xy: 610, 289
-  size: 58, 75
-  orig: 58, 75
+  xy: 710, 450
+  size: 72, 64
+  orig: 72, 64
+  offset: 0, 0
+  index: 2
+player-dance-right
+  rotate: false
+  xy: 610, 346
+  size: 72, 64
+  orig: 72, 64
+  offset: 0, 0
+  index: 1
+player-dance-right
+  rotate: false
+  xy: 2, 70
+  size: 72, 64
+  orig: 72, 64
+  offset: 0, 0
+  index: 2
+player-jump
+  rotate: false
+  xy: 78, 138
+  size: 72, 64
+  orig: 72, 64
   offset: 0, 0
   index: -1
 player-strike
+  rotate: false
+  xy: 482, 242
+  size: 72, 64
+  orig: 72, 64
+  offset: 0, 0
+  index: 1
+player-strike
+  rotate: false
+  xy: 786, 450
+  size: 72, 64
+  orig: 72, 64
+  offset: 0, 0
+  index: 2
+player-walk
   rotate: false
   xy: 2, 2
-  size: 58, 75
-  orig: 58, 75
+  size: 72, 64
+  orig: 72, 64
   offset: 0, 0
   index: 1
-player-strike
+player-walk
   rotate: false
-  xy: 64, 81
-  size: 58, 75
-  orig: 58, 75
-  offset: 0, 0
-  index: 2
-player-strike
-  rotate: false
-  xy: 468, 185
-  size: 58, 75
-  orig: 58, 75
-  offset: 0, 0
-  index: 3
-playerl
-  rotate: false
-  xy: 64, 2
-  size: 58, 75
-  orig: 58, 75
-  offset: 0, 0
-  index: 1
-playerl
-  rotate: false
-  xy: 64, 2
-  size: 58, 75
-  orig: 58, 75
-  offset: 0, 0
-  index: 3
-playerl
-  rotate: false
-  xy: 126, 81
-  size: 58, 75
-  orig: 58, 75
-  offset: 0, 0
-  index: 2
-playerr
-  rotate: false
-  xy: 530, 185
-  size: 58, 75
-  orig: 58, 75
-  offset: 0, 0
-  index: 1
-playerr
-  rotate: false
-  xy: 530, 185
-  size: 58, 75
-  orig: 58, 75
-  offset: 0, 0
-  index: 4
-playerr
-  rotate: false
-  xy: 126, 2
-  size: 58, 75
-  orig: 58, 75
+  xy: 78, 70
+  size: 72, 64
+  orig: 72, 64
   offset: 0, 0
   index: 2
 restart
   rotate: false
-  xy: 506, 264
+  xy: 506, 310
   size: 100, 100
   orig: 100, 100
   offset: 0, 0
   index: -1
-right_arrow
-  rotate: false
-  xy: 188, 81
-  size: 58, 75
-  orig: 58, 75
-  offset: 0, 0
-  index: -1
 title
   rotate: false
-  xy: 2, 472
+  xy: 2, 518
   size: 720, 500
   orig: 720, 500
   offset: 0, 0
   index: -1
 victory
   rotate: false
-  xy: 2, 160
+  xy: 2, 206
   size: 400, 100
   orig: 400, 100
   offset: 0, 0

@@ -147,7 +147,7 @@ public class GameScreen extends BaseScreen {
             player.setMovementController(i ==0 ? new InputController() : new AIController(player));
             float x = MathUtils.random(0, getWorldWidth() - player.getWidth());
             player.setPosition(x, 4 * getTileHeight());
-            player.setMessgae(new Message(label, player, player.getSpellCasing()));
+            player.setMessage(new Message(label, player, player.getSpellCasing()));
             players.add(player);
         }
     }
