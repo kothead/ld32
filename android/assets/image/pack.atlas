@@ -4,13 +4,6 @@ size: 512,512
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
-left_arrow
-  rotate: false
-  xy: 272, 427
-  size: 58, 75
-  orig: 58, 75
-  offset: 0, 0
-  index: -1
 lightning
   rotate: false
   xy: 2, 2
@@ -48,92 +41,71 @@ lightning
   index: 5
 player
   rotate: false
-  xy: 272, 348
-  size: 58, 75
-  orig: 58, 75
+  xy: 272, 438
+  size: 72, 64
+  orig: 72, 64
   offset: 0, 0
   index: -1
-player-dead
+player-dance-left
   rotate: false
-  xy: 334, 444
-  size: 75, 58
-  orig: 75, 58
+  xy: 272, 370
+  size: 72, 64
+  orig: 72, 64
   offset: 0, 0
-  index: -1
-player-fall
+  index: 1
+player-dance-left
   rotate: false
-  xy: 272, 269
-  size: 58, 75
-  orig: 58, 75
+  xy: 348, 438
+  size: 72, 64
+  orig: 72, 64
+  offset: 0, 0
+  index: 2
+player-dance-right
+  rotate: false
+  xy: 272, 302
+  size: 72, 64
+  orig: 72, 64
+  offset: 0, 0
+  index: 1
+player-dance-right
+  rotate: false
+  xy: 348, 370
+  size: 72, 64
+  orig: 72, 64
+  offset: 0, 0
+  index: 2
+player-jump
+  rotate: false
+  xy: 424, 438
+  size: 72, 64
+  orig: 72, 64
   offset: 0, 0
   index: -1
 player-strike
   rotate: false
-  xy: 334, 365
-  size: 58, 75
-  orig: 58, 75
+  xy: 272, 234
+  size: 72, 64
+  orig: 72, 64
   offset: 0, 0
   index: 1
 player-strike
   rotate: false
-  xy: 272, 190
-  size: 58, 75
-  orig: 58, 75
+  xy: 348, 302
+  size: 72, 64
+  orig: 72, 64
   offset: 0, 0
   index: 2
-player-strike
+player-walk
   rotate: false
-  xy: 334, 286
-  size: 58, 75
-  orig: 58, 75
-  offset: 0, 0
-  index: 3
-playerl
-  rotate: false
-  xy: 272, 111
-  size: 58, 75
-  orig: 58, 75
+  xy: 424, 370
+  size: 72, 64
+  orig: 72, 64
   offset: 0, 0
   index: 1
-playerl
+player-walk
   rotate: false
-  xy: 272, 111
-  size: 58, 75
-  orig: 58, 75
-  offset: 0, 0
-  index: 3
-playerl
-  rotate: false
-  xy: 334, 207
-  size: 58, 75
-  orig: 58, 75
+  xy: 272, 166
+  size: 72, 64
+  orig: 72, 64
   offset: 0, 0
   index: 2
-playerr
-  rotate: false
-  xy: 272, 32
-  size: 58, 75
-  orig: 58, 75
-  offset: 0, 0
-  index: 1
-playerr
-  rotate: false
-  xy: 272, 32
-  size: 58, 75
-  orig: 58, 75
-  offset: 0, 0
-  index: 4
-playerr
-  rotate: false
-  xy: 334, 128
-  size: 58, 75
-  orig: 58, 75
-  offset: 0, 0
-  index: 2
-right_arrow
-  rotate: false
-  xy: 334, 49
-  size: 58, 75
-  orig: 58, 75
-  offset: 0, 0
-  index: -1

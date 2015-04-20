@@ -30,8 +30,8 @@ public class Player extends Sprite implements MovementListener {
         this.isPlayer = isPlayer;
     }
 
-    public void setMessgae(Message messgae) {
-        this.message = messgae;
+    public void setMessage(Message message) {
+        this.message = message;
     }
 
     public Array<ArrowButton.Type> getSpellCasing() {
@@ -44,13 +44,14 @@ public class Player extends Sprite implements MovementListener {
 
     enum State {
         STAND("player", 0, 0, Animation.PlayMode.NORMAL),
-        STRIKE("player-strike", 3, 0.6f, Animation.PlayMode.NORMAL),
-        FALL("player-fall", 0, 0, Animation.PlayMode.NORMAL),
-        DEAD("player-dead", 0, 0, Animation.PlayMode.NORMAL),
-        LEFT_JUMP_START("playerl", 2, 0.1f, Animation.PlayMode.NORMAL),
-        LEFT_JUMP_STOP("playerl", 2, 0.1f, Animation.PlayMode.REVERSED),
-        RIGHT_JUMP_START("playerr", 2, 0.1f, Animation.PlayMode.NORMAL),
-        RIGHT_JUMP_STOP("playerr", 2, 0.1f, Animation.PlayMode.REVERSED),;
+        STRIKE("player-strike", 2, 0.1f, Animation.PlayMode.LOOP),
+        FALL("player-strike", 2, 0.1f, Animation.PlayMode.LOOP),
+        JUMP("player-jump", 0, 0, Animation.PlayMode.NORMAL),
+        WALK("player-walk", 2, 0.1f, Animation.PlayMode.LOOP),
+        LEFT_JUMP_START("player-dance-left", 2, 0.1f, Animation.PlayMode.NORMAL),
+        LEFT_JUMP_STOP("player-dance-left", 2, 0.1f, Animation.PlayMode.REVERSED),
+        RIGHT_JUMP_START("player-dance-right", 2, 0.1f, Animation.PlayMode.NORMAL),
+        RIGHT_JUMP_STOP("player-dance-right", 2, 0.1f, Animation.PlayMode.REVERSED),;
 
         private boolean animated;
         private Animation animation;
@@ -62,7 +63,8 @@ public class Player extends Sprite implements MovementListener {
                 animation = new Animation(duration, ImageCache.getFrames(texture, 1, count));
                 animation.setPlayMode(playMode);
             } else {
-                region = ImageCache.getTexture("player");
+                animated = false;
+                region = ImageCache.getTexture(texture);
             }
         }
 
@@ -81,7 +83,7 @@ public class Player extends Sprite implements MovementListener {
     private final Vector2 velocity = new Vector2();
 
     private boolean canJump;
-    private boolean isJumpingLow;
+    private boolean isJumping;
     private float collisionStep;
     private TiledMapTileLayer collisionLayer;
 
@@ -140,8 +142,7 @@ public class Player extends Sprite implements MovementListener {
                 setState(State.FALL);
                 fallingTime = 0;
             } else if (state == State.RIGHT_JUMP_START || state == State.LEFT_JUMP_START) {
-                isJumpingLow = true;
-                onJump();
+                onAnyJump();
             } else if (state == State.RIGHT_JUMP_STOP || state == State.LEFT_JUMP_STOP) {
                 setState(State.STAND);
                 movementController.stopLegJumping();
@@ -150,7 +151,6 @@ public class Player extends Sprite implements MovementListener {
                     waitingForStrike = true;
                 }
             }
-
         }
     }
 
@@ -181,9 +181,7 @@ public class Player extends Sprite implements MovementListener {
         }
 
         updateState(delta);
-        if (state == State.DEAD || gameScreen.isGameOver() ||
-                state == State.STRIKE)
-            return;
+        if (gameScreen.isGameOver() || state == State.STRIKE) return;
 
         movementController.progress(delta, closestPlayer);
 
@@ -198,10 +196,13 @@ public class Player extends Sprite implements MovementListener {
         boolean collisionY = false;
 
         if (movementController.isMovingLeft()) {
+            if (state == State.STAND && canJump) setState(State.WALK);
             velocity.x = -speed.x;
         } else if (movementController.isMovingRight()) {
+            if (state == State.STAND && canJump) setState(State.WALK);
             velocity.x = speed.x;
         } else {
+            if (state == State.WALK) setState(State.STAND);
             velocity.x = 0;
         }
 
@@ -224,7 +225,7 @@ public class Player extends Sprite implements MovementListener {
         else if (velocity.x > 0)
             collisionX = collidesRight();
 
-        if(collisionX) {
+        if (collisionX) {
             gameScreen.gameOver(isPlayer);
         }
 
@@ -232,8 +233,8 @@ public class Player extends Sprite implements MovementListener {
         if (velocity.y < 0) {
             canJump = collisionY = collidesBottom();
             if (oldCellY <= getCellY(getY())) collisionY = false;
-            if (isJumpingLow) {
-                isJumpingLow = false;
+            if (isJumping) {
+                isJumping = false;
                 finishJumpAnimation();
             }
         }
@@ -293,10 +294,9 @@ public class Player extends Sprite implements MovementListener {
     private void finishJumpAnimation() {
         if (gameScreen.isGameOver()) return;
 
-        if (state == State.RIGHT_JUMP_START)
-            setState(State.RIGHT_JUMP_STOP);
-        if (state == State.LEFT_JUMP_START)
-            setState(State.LEFT_JUMP_STOP);
+        if (state == State.RIGHT_JUMP_START) setState(State.RIGHT_JUMP_STOP);
+        if (state == State.LEFT_JUMP_START) setState(State.LEFT_JUMP_STOP);
+        if (state == State.JUMP) setState(State.STAND);
     }
 
     private boolean collidesBottom() {
@@ -340,6 +340,14 @@ public class Player extends Sprite implements MovementListener {
         if (state == State.STRIKE || gameScreen.isGameOver())
             return;
         if (canJump) {
+            setState(State.JUMP);
+            onAnyJump();
+        }
+    }
+
+    private void onAnyJump() {
+        if (canJump) {
+            isJumping = true;
             velocity.y = speed.y;
             canJump = false;
         }
