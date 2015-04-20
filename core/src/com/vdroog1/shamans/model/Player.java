@@ -288,7 +288,7 @@ public class Player extends Sprite implements MovementListener {
             ArrowButton.Type from = fromPlayer.getSpellCasing().get(i);
             if (i >= spellCasing.size) return false;
             ArrowButton.Type to = spellCasing.get(i);
-            if (from != to.getOpposite()) return false;
+            if (from != to) return false;
         }
         return true;
     }
@@ -367,7 +367,8 @@ public class Player extends Sprite implements MovementListener {
 
     private void addSpellCasting(ArrowButton.Type type) {
         message.reset();
-        spellCasing.add(type);
+        spellCasing.insert(0, type);
+        if (spellCasing.size > 3) spellCasing.pop();
     }
 
     @Override

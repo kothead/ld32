@@ -30,7 +30,7 @@ import com.vdroog1.shamans.view.Message;
 public class GameScreen extends BaseScreen {
 
     public static final int UNIT_SCALE = 4;
-    public static final int PLAYER_NUM = 3;
+    public static final int PLAYER_NUM = 2;
     private TiledMap map;
     private float mapWidth, mapHeight;
     private float tileWidth, tileHeight;

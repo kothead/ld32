@@ -96,21 +96,22 @@ public class AIController implements MovementController {
         timeBetweenSpells += delta;
 
         float distance = closestPlayer.getY() - player.getY();
-        if (closestPlayer.getSpellCasing().size >= 2 && !isCasting
-                && closestPlayer.getSpellCasing().size > player.getSpellCasing().size) {
-            int spellSize = player.getSpellCasing().size;
-            ArrowButton.Type jump = closestPlayer.getSpellCasing().get(spellSize);
+        int mySize = player.getSpellCasing().size;
+        int enemySize = closestPlayer.getSpellCasing().size;
+        if (enemySize >= 2 && !isCasting && enemySize > mySize) {
+            ArrowButton.Type jump = closestPlayer.getSpellCasing().get(enemySize - mySize - 1);
             //random error
             int randomNum = MathUtils.random(0, 7);
             if (randomNum != 0) {
-                if (jump == ArrowButton.Type.RIGHT) listener.onLeftLegJump();
-                else listener.onRightLegJump();
-            } else {
                 if (jump == ArrowButton.Type.RIGHT) listener.onRightLegJump();
                 else listener.onLeftLegJump();
+            } else {
+                if (jump == ArrowButton.Type.RIGHT) listener.onLeftLegJump();
+                else listener.onRightLegJump();
             }
             isCasting = true;
-        } else if ((distance > 200 || (distance < 0 && distance > -50)) && !isCasting && timeBetweenSpells > 1.5) {
+        } else if ((distance > 200 || (distance < 0 && distance > -100)) && !isCasting && timeBetweenSpells > 1.5
+                && enemySize <= mySize && mySize < 3) {
             int randomNum = MathUtils.random(0, 1);
             if (randomNum == 0) listener.onLeftLegJump();
             else listener.onRightLegJump();
