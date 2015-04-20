@@ -156,6 +156,8 @@ public class AStarPathFinder {
     protected boolean isValidLocation(int sx, int sy, int x, int y) {
         boolean invalid = (x < 0) || (y < 0) || (x >= tiledMap.getWidth()) || (y >= tiledMap.getHeight());
 
+        invalid = x < 4;
+
         if (!invalid && ((sx != x) || (sy != y))) {
             invalid = Utils.isCellBlocked(tiledMap, x, y);
         }

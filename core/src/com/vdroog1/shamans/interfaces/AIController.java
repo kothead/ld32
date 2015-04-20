@@ -68,7 +68,7 @@ public class AIController implements MovementController {
 
         timeBetweenSpells += delta;
 
-        float distance = closestPlayer.getY() - player.getY();
+        float distance = Math.abs(closestPlayer.getY() - player.getY());
         if (closestPlayer.getSpellCasing().size >= 2 && !isCasting
                 && closestPlayer.getSpellCasing().size > player.getSpellCasing().size) {
             int spellSize = player.getSpellCasing().size;
@@ -83,7 +83,7 @@ public class AIController implements MovementController {
                 else listener.onLeftLegJump();
             }
             isCasting = true;
-        } else if (distance > 200 && distance < 400 && !isCasting && timeBetweenSpells > 3) {
+        } else if (distance > 200 && !isCasting && timeBetweenSpells > 1.5) {
             int randomNum = MathUtils.random(0, 1);
             if (randomNum == 0) listener.onLeftLegJump();
             else listener.onRightLegJump();
@@ -91,7 +91,11 @@ public class AIController implements MovementController {
             timeBetweenSpells = 0;
         }
 
-        if (isCasting) return;
+        if (isCasting) {
+            isMovingRight = false;
+            isMovingLeft = false;
+            return;
+        }
 
         if (path == null || path.getLength() == 0) {
             if (!isPathSearchRunning && lastControlPoint < positions.size) {
@@ -107,6 +111,9 @@ public class AIController implements MovementController {
 
         target.set(path.getStep(0).x * player.getCollisionLayer().getTileWidth() * GameScreen.UNIT_SCALE,
                 path.getStep(0).y * player.getCollisionLayer().getTileHeight() * GameScreen.UNIT_SCALE);
+
+        //Gdx.app.log("Test", "target [" + target.x + ", " + target.y + "]");
+
         float deltaY = target.y - player.getY();
         float deltaX = Math.abs(target.x - player.getX());
         if (deltaY > 1) {
@@ -147,7 +154,6 @@ public class AIController implements MovementController {
                 Gdx.app.log("Test", "start path search");
                 isPathSearchRunning = true;
                 Vector2 closestControlPoint = getControlPoint();
-                Gdx.app.log("Test", "point [" + closestControlPoint.x + ", " + closestControlPoint.y + " ]");
                 path = pathFinder.findPath(new Vector2(player.getCellX(), player.getCellY()), closestControlPoint);
                 if (path != null) lastControlPoint++;
                 isPathSearchRunning = false;

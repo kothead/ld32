@@ -137,7 +137,6 @@ public class Player extends Sprite implements MovementListener {
 
         stateTime += delta;
         if (state.animated && state.animation.isAnimationFinished(stateTime)) {
-        //    Gdx.app.log("isAnimationFinished ", "current state " + state);
             if (state == State.STRIKE) {
                 setState(State.FALL);
                 fallingTime = 0;
@@ -174,8 +173,7 @@ public class Player extends Sprite implements MovementListener {
 
         if (waitingForStrike && strikeDelay > STRIKE_DELAY) {
             gameScreen.castSpell(this);
-            waitingForStrike = false;
-            spellCasing.clear();
+            stopCasting();
         } else if (waitingForStrike) {
             strikeDelay += delta;
         }
@@ -218,6 +216,7 @@ public class Player extends Sprite implements MovementListener {
             fallingTime += delta;
             if (getY() < 4 * gameScreen.getTileHeight()) {
                 setState(State.STAND);
+                movementController.onFallen();
             }
             if (fallingTime < FALL_TIME)
                 return;
@@ -259,24 +258,24 @@ public class Player extends Sprite implements MovementListener {
     }
 
     private void stopCasting() {
+        strikeDelay = 0;
+        waitingForStrike = false;
         spellCasing.clear();
     }
 
     public boolean strike(Player fromPlayer) {
         Gdx.app.log("Test", "Strike");
-        strikeDelay = 0;
-        waitingForStrike = false;
+        stopCasting();
         message.reset();
 
         if (isSpellCanceled(fromPlayer)) {
             Gdx.app.log("Test", "Spell Canceled");
-            spellCasing.clear();
             setState(State.STAND);
             return false;
         } else {
             Gdx.app.log("Test", "Spell Works");
             if (gameScreen.isGameOver()) return true;
-
+            movementController.stopLegJumping();
             setState(State.STRIKE);
             return true;
         }
@@ -284,12 +283,10 @@ public class Player extends Sprite implements MovementListener {
 
     private boolean isSpellCanceled(Player fromPlayer) {
         for (int i = 0; i < 3; i++) {
-            Gdx.app.log("Test", "from " + fromPlayer.getSpellCasing().size + ", to " + spellCasing.size);
             if (i >= fromPlayer.getSpellCasing().size) return false;
             ArrowButton.Type from = fromPlayer.getSpellCasing().get(i);
             if (i >= spellCasing.size) return false;
             ArrowButton.Type to = spellCasing.get(i);
-            Gdx.app.log("Test", "from " + from + ", to " + to);
             if (from != to.getOpposite()) return false;
         }
         return true;
