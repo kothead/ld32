@@ -21,11 +21,44 @@ public class AIController implements MovementController {
     private static final float TIME_WAKE_UP = 3;
 
     Array<Vector2> positions = new Array(){{
-        add(new Vector2(41, 249 - 223));
-        add(new Vector2(34, 249 - 206));
-        add(new Vector2(35, 249 - 196));
-        add(new Vector2(31, 249 - 124));
-        add(new Vector2(48, 249 - 209));
+        add(new Vector2(28, 249 - 235));
+        add(new Vector2(38, 249 - 220));
+        add(new Vector2(38, 249 - 204));
+        add(new Vector2(36, 249 - 194));
+        add(new Vector2(41, 249 - 183));
+        add(new Vector2(23, 249 - 173));
+        add(new Vector2(41, 249 - 164));
+        add(new Vector2(37, 249 - 155));
+        add(new Vector2(40, 249 - 146));
+        add(new Vector2(46, 249 - 142));
+        add(new Vector2(48, 249 - 139));
+        add(new Vector2(49, 249 - 136));
+        add(new Vector2(44, 249 - 135));
+        add(new Vector2(42, 249 - 133));
+        add(new Vector2(38, 249 - 130));
+        add(new Vector2(35, 249 - 123));
+        add(new Vector2(44, 249 - 120));
+        add(new Vector2(52, 249 - 118));
+        add(new Vector2(28, 249 - 124));
+        add(new Vector2(43, 249 - 119));
+        add(new Vector2(55, 249 - 113));
+        add(new Vector2(57, 249 - 106));
+        add(new Vector2(57, 249 - 106));
+        add(new Vector2(56, 249 - 103));
+        add(new Vector2(34, 249 - 100));
+        add(new Vector2(31, 249 - 92));
+        add(new Vector2(31, 249 - 86));
+        add(new Vector2(21, 249 - 85));
+        add(new Vector2(23, 249 - 83));
+        add(new Vector2(20, 249 - 81));
+        add(new Vector2(23, 249 - 77));
+        add(new Vector2(28, 249 - 71));
+        add(new Vector2(23, 249 - 66));
+        add(new Vector2(17, 249 - 60));
+        add(new Vector2(15, 249 - 53));
+        add(new Vector2(15, 249 - 47));
+        add(new Vector2(19, 249 - 43));
+        add(new Vector2(25, 249 - 41));
     }};
 
     private static ExecutorService executor = Executors.newSingleThreadExecutor();
@@ -77,7 +110,7 @@ public class AIController implements MovementController {
                 else listener.onRightLegJump();
             }
             isCasting = true;
-        } else if ((distance > 200 || distance < -50) && !isCasting && timeBetweenSpells > 1.5
+        } else if ((distance > 200 || (distance < 0 && distance > -100)) && !isCasting && timeBetweenSpells > 1.5
                 && enemySize <= mySize && mySize < 3) {
             int randomNum = MathUtils.random(0, 1);
             if (randomNum == 0) listener.onLeftLegJump();
