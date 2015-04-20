@@ -174,6 +174,7 @@ public class Player extends Sprite implements MovementListener {
 
         if (waitingForStrike && strikeDelay > STRIKE_DELAY) {
             gameScreen.castSpell(this);
+            message.reset();
             stopCasting();
         } else if (waitingForStrike) {
             strikeDelay += delta;
@@ -215,12 +216,12 @@ public class Player extends Sprite implements MovementListener {
 
         if (state == State.FALL) {
             fallingTime += delta;
-            if (getY() < 4 * gameScreen.getTileHeight()) {
+            if (getY() < 4 * gameScreen.getTileHeight() || fallingTime >= FALL_TIME) {
                 setState(State.STAND);
                 movementController.onFallen();
-            }
-            if (fallingTime < FALL_TIME)
+            } else {
                 return;
+            }
         }
 
         boolean collisionX = false;
@@ -265,15 +266,15 @@ public class Player extends Sprite implements MovementListener {
     }
 
     public boolean strike(Player fromPlayer) {
-        Gdx.app.log("Test", "Strike");
+//        Gdx.app.log("Test", "Strike");
         if (isSpellCanceled(fromPlayer)) {
-            Gdx.app.log("Test", "Spell Canceled");
+//            Gdx.app.log("Test", "Spell Canceled");
             setState(State.STAND);
             stopCasting();
             message.reset();
             return false;
         } else {
-            Gdx.app.log("Test", "Spell Works");
+//            Gdx.app.log("Test", "Spell Works");
             if (gameScreen.isGameOver()) return true;
             movementController.stopLegJumping();
             setState(State.STRIKE);
@@ -360,7 +361,7 @@ public class Player extends Sprite implements MovementListener {
 
     @Override
     public void onLeftLegJump() {
-        if (state == State.STRIKE || !gameScreen.isPlayable())
+        if (state == State.STRIKE || state == State.FALL || !gameScreen.isPlayable())
             return;
         if (!isCastingJumping()) {
             addSpellCasting(ArrowButton.Type.LEFT);
@@ -376,7 +377,7 @@ public class Player extends Sprite implements MovementListener {
 
     @Override
     public void onRightLegJump() {
-        if (state == State.STRIKE || !gameScreen.isPlayable())
+        if (state == State.STRIKE || state == State.FALL || !gameScreen.isPlayable())
             return;
         if (!isCastingJumping()) {
             addSpellCasting(ArrowButton.Type.RIGHT);

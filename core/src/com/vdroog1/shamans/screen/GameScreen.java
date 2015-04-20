@@ -92,6 +92,8 @@ public class GameScreen extends BaseScreen {
                     } else {
                         unpauseGame();
                     }
+                } else if (keycode == Input.Keys.ENTER) {
+                    if (!isPlayable()) getGame().setGameScreen();
                 }
                 return super.keyUp(keycode);
             }
