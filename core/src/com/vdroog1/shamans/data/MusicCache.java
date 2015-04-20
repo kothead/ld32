@@ -8,9 +8,7 @@ import com.badlogic.gdx.audio.Music;
  */
 public class MusicCache {
 
-    /**
-     * TODO: put melodies here as constants with names of the mp3 without extension
-     */
+    public static final String MAIN_GAMEPLAY = "zanzibar";
 
     private static final String MUSIC_DIR = "music/";
     private static final String MUSIC_EXT = ".mp3";
@@ -55,5 +53,6 @@ public class MusicCache {
     public static void dispose() {
         if (music != null) music.dispose();
         music = null;
+        key = null;
     }
 }

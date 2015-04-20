@@ -9,6 +9,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.vdroog1.shamans.data.ImageCache;
+import com.vdroog1.shamans.data.SoundCache;
 import com.vdroog1.shamans.interfaces.MovementController;
 import com.vdroog1.shamans.interfaces.MovementListener;
 import com.vdroog1.shamans.screen.GameScreen;
@@ -278,6 +279,7 @@ public class Player extends Sprite implements MovementListener {
             setState(State.STRIKE);
             stopCasting();
             message.reset();
+            SoundCache.play(SoundCache.SOUND_STRIKE);
             return true;
         }
     }
@@ -349,6 +351,7 @@ public class Player extends Sprite implements MovementListener {
 
     private void onAnyJump() {
         if (canJump) {
+            if (isPlayer) SoundCache.play(SoundCache.SOUND_JUMP);
             isJumping = true;
             velocity.y = speed.y;
             canJump = false;
