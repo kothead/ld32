@@ -179,7 +179,7 @@ public class AIController implements MovementController {
         executor.submit(new Runnable() {
             @Override
             public void run() {
-                Gdx.app.log("Test", "start path search");
+//                Gdx.app.log("Test", "start path search");
                 isPathSearchRunning = true;
                 Vector2 closestControlPoint = getControlPoint();
                 if (closestControlPoint == null) {
@@ -228,12 +228,12 @@ public class AIController implements MovementController {
     public void stopLegJumping() {
         isCasting = false;
         isSleeping = false;
-        findPath();
     }
 
     @Override
     public void onFallen() {
         isSleeping = false;
+        isCasting = false;
         findPath();
     }
 }

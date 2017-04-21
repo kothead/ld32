@@ -111,4 +111,12 @@ public abstract class BaseScreen extends ScreenAdapter {
             layoutViewsPortrait(width, height);
         }
     }
+
+    @Override
+    public void dispose() {
+        shapes().dispose();
+        stage().dispose();
+        batch().dispose();
+        super.dispose();
+    }
 }

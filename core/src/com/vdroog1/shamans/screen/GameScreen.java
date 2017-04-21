@@ -17,7 +17,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 import com.vdroog1.shamans.ShamanGame;
 import com.vdroog1.shamans.data.ImageCache;
+import com.vdroog1.shamans.data.MusicCache;
 import com.vdroog1.shamans.data.SkinCache;
+import com.vdroog1.shamans.data.SoundCache;
 import com.vdroog1.shamans.interfaces.AIController;
 import com.vdroog1.shamans.interfaces.InputController;
 import com.vdroog1.shamans.model.LightningController;
@@ -29,8 +31,10 @@ import com.vdroog1.shamans.view.Message;
  */
 public class GameScreen extends BaseScreen {
 
+    public static final int MIN_PLAYER_NUM = 2;
+    public static final int MAX_PLAYER_NUM = 10;
+
     public static final int UNIT_SCALE = 4;
-    public static final int PLAYER_NUM = 2;
     private TiledMap map;
     private float mapWidth, mapHeight;
     private float tileWidth, tileHeight;
@@ -88,11 +92,16 @@ public class GameScreen extends BaseScreen {
                     } else {
                         unpauseGame();
                     }
+                } else if (keycode == Input.Keys.ENTER) {
+                    if (!isPlayable()) getGame().setGameScreen();
                 }
                 return super.keyUp(keycode);
             }
         });
         Gdx.input.setInputProcessor(inputMultiplexer);
+
+        MusicCache.dispose();
+        MusicCache.play(MusicCache.MAIN_GAMEPLAY);
     }
 
     private void pauseGame() {
@@ -134,14 +143,14 @@ public class GameScreen extends BaseScreen {
 
     @Override
     public void dispose() {
-        super.dispose();
-        stage().dispose();
         map.dispose();
         renderer.dispose();
+        super.dispose();
     }
 
     private void generatePlayers(TiledMapTileLayer tileLayer) {
-        for (int i = 0; i < PLAYER_NUM; i++) {
+        int playerNum = (int) (Math.random() * (MAX_PLAYER_NUM - MIN_PLAYER_NUM)) + MIN_PLAYER_NUM;
+        for (int i = 0; i < playerNum; i++) {
             Label label = new Label(null, SkinCache.getDefaultSkin(), "message");
             stage().addActor(label);
 
@@ -226,11 +235,14 @@ public class GameScreen extends BaseScreen {
     }
 
     private void strike(Player from, Player to) {
-        if (to.strike(from))
+        if (to != null && to.strike(from))
             lightnings.strike(to);
     }
 
     public void gameOver(boolean victory) {
+        MusicCache.dispose();
+        SoundCache.play(SoundCache.SOUND_WIN);
+
         Image result;
         if (victory)
             result = new Image(ImageCache.getTexture("victory"));

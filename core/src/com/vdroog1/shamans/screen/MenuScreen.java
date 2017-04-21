@@ -70,6 +70,8 @@ public class MenuScreen extends BaseScreen {
             public boolean keyUp(int keycode) {
                 if (keycode == Input.Keys.ESCAPE) {
                     Gdx.app.exit();
+                } else if (keycode == Input.Keys.ENTER) {
+                    getGame().setGameScreen();
                 }
                 return super.keyUp(keycode);
             }
